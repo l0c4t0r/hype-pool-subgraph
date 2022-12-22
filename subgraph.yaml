@@ -1,0 +1,26 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: HypeRegistry
+    network: arbitrum-one
+    source:
+      address: "0x66CD859053c458688044d816117D5Bdf42A56813"
+      abi: HypeRegistry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - HypeAdded
+        - HypeRemoved
+      abis:
+        - name: HypeRegistry
+          file: ./abis/HypeRegistry.json
+      eventHandlers:
+        - event: HypeAdded(address,uint256)
+          handler: handleHypeAdded
+        - event: HypeRemoved(address,uint256)
+          handler: handleHypeRemoved
+      file: ./src/hype-registry.ts

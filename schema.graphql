@@ -1,0 +1,17 @@
+type HypeAdded @entity(immutable: true) {
+  id: Bytes!
+  hype: Bytes! # address
+  index: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HypeRemoved @entity(immutable: true) {
+  id: Bytes!
+  hype: Bytes! # address
+  index: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
