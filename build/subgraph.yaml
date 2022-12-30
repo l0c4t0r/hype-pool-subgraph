@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: HypeRegistry
@@ -18,15 +18,15 @@ dataSources:
         - Pool
       abis:
         - name: HypeRegistry
-          file: ./abis/HypeRegistry.json
+          file: HypeRegistry/abis/HypeRegistry.json
         - name: Hypervisor
-          file: ./abis/UniswapV3Hypervisor.json
+          file: HypeRegistry/abis/UniswapV3Hypervisor.json
         - name: Pool
-          file: ./abis/UniswapV3Pool.json
+          file: HypeRegistry/abis/UniswapV3Pool.json
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
-      file: ./src/hype-registry.ts
+      file: HypeRegistry/HypeRegistry.wasm
 templates:
   - name: Pool
     kind: ethereum/contract
@@ -37,13 +37,13 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/pool.ts
+      file: templates/Pool/Pool.wasm
       entities:
         - Pool
         - Tick
       abis:
         - name: Pool
-          file: ./abis/UniswapV3Pool.json
+          file: Pool/abis/UniswapV3Pool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint
