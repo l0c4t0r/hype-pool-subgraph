@@ -1,0 +1,10 @@
+{
+  "network": "optimism",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xF5BFA20F4A77933fEE0C7bB7F39E7642A070d599",
+      "startBlock": 6538026
+    }
+  ]
+}

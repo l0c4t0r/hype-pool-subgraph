@@ -1,0 +1,10 @@
+{
+  "network": "celo",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x0F548d7AD1A0CB30D1872b8C18894484d76e1569",
+      "startBlock": 14032548
+    }
+  ]
+}

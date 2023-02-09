@@ -171,16 +171,18 @@ function updateActiveTicks(
 ): void {
   const pool = getOrCreatePool(poolAddress);
   let activeTicks = new Set<i32>();
+
   for (let i = 0; i < pool._ticksActive.length; i++) {
     activeTicks.add(pool._ticksActive[i]);
+  }
+  
+  // Delete old before adding new in case rebalance ranges are the same
+  for (let i = 0; i < ticksOld.length; i++) {
+    activeTicks.delete(ticksOld[i]);
   }
 
   for (let i = 0; i < ticksNew.length; i++) {
     activeTicks.add(ticksNew[i]);
-  }
-
-  for (let i = 0; i < ticksOld.length; i++) {
-    activeTicks.delete(ticksOld[i]);
   }
 
   pool._ticksActive = activeTicks.values();
