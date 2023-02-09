@@ -5,7 +5,6 @@ import {
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
 import { updateHypervisorRanges } from "../../helpers/feeGrowth";
-import { updateAlgebraPoolPositionFees } from "../../helpers/algebra";
 import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
 import { updateUniswapV3PoolPositionFees } from "../../helpers/uniswapV3";
 
@@ -15,7 +14,7 @@ export function handleDeposit(event: Deposit): void {
     BASE_POSITION,
     event.block.number
   );
-  updateAlgebraPoolPositionFees(
+  updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number
@@ -27,7 +26,7 @@ export function handleWithdraw(event: Withdraw): void {
     BASE_POSITION,
     event.block.number
   );
-  updateAlgebraPoolPositionFees(
+  updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number
@@ -43,7 +42,7 @@ export function handleRebalance(event: Rebalance): void {
     BASE_POSITION,
     event.block.number
   );
-  updateAlgebraPoolPositionFees(
+  updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number
@@ -56,7 +55,7 @@ export function handleZeroBurn(event: ZeroBurn): void {
     BASE_POSITION,
     event.block.number
   );
-  updateAlgebraPoolPositionFees(
+  updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number
