@@ -2,9 +2,15 @@
   "name": "hype-pool-uniswap-v3-arbitrum",
   "license": "UNLICENSED",
   "scripts": {
+    "prepare:uniswap:arbitrum": "mustache config/uniswapV3/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:uniswap:mainnet": "mustache config/uniswapV3/mainnet.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebra.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
+    "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
+    "deploy:uniswap:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-mainnet",
+    "deploy:quickswap:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-quickswap-polygon",
     "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 l0c4t0r/hype-pool-uniswap-v3-arbitrum",
@@ -14,5 +20,8 @@
     "@graphprotocol/graph-cli": "0.37.1",
     "@graphprotocol/graph-ts": "0.28.1"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "devDependencies": {
+    "matchstick-as": "0.5.0",
+    "mustache": "^4.2.0"
+  }
 }

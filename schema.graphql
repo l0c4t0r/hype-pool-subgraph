@@ -1,23 +1,105 @@
-type Hypervisor @entity(immutable: true) {
+enum underlyingProtocol {
+  uniswapV3
+  algebra
+}
+
+enum Network {
+  mainnet
+  arbitrum
+  celo
+  matic
+  optimism
+}
+
+enum HypervisorPositionType {
+  base
+  limit
+}
+
+type Protocol @entity(immutable: true) {
+  "Hypervisor registry address"
+  id: String!
+  "Name of protocol"
+  name: String!
+  "Underlying infrastructure protocol"
+  underlyingProtocol: underlyingProtocol!
+  "Network/chain"
+  network: Network!
+  "Subgraph version"
+  version: String!
+}
+
+type Hypervisor @entity {
+  "Address of hypervisor"
   id: Bytes!
+  "Address of underlying pool"
   pool: Pool!
+  "Base position attributes"
+  basePosition: HypervisorPosition!
+  "limit position attributes"
+  limitPosition: HypervisorPosition!
+}
+
+
+type HypervisorPosition @entity {
+  "{Hypervisor ID}-{Position Type}"
+  id: String!
+  "Hypervisor address of this position"
+  hypervisor: Hypervisor!
+  "Whether this is a base or limit position"
+  type: HypervisorPositionType!
+  "Position key for querying pool"
+  key: Bytes
+  "The lower tick for this position range"
+  tickLower: Tick!
+  "The upper tick for this position range"
+  tickUpper: Tick!
+  "Liquidity associated with this position"
+  liquidity: BigInt
+  "Token 0 owed"
+  tokensOwed0: BigInt!
+  "Token 1 owed"
+  tokensOwed1: BigInt!
+  "Fee growth inside of token 0"
+  feeGrowthInside0X128: BigInt!
+  "Fee growth inside of token 1"
+  feeGrowthInside1X128: BigInt!
+  "Block in which tick was last updated"
+  lastUpdatedBlock: BigInt!
 }
 
 type Pool @entity {
+  "Address of DEX pool"
   id: Bytes!
-  feeTier: BigInt!
-  tick: BigInt!
+  "Tick spacing for pool"
+  tickSpacing: BigInt!
+  "Current tick"
+  currentTick: Int!
+  "fee growth global of token 0"
   feeGrowthGlobal0X128: BigInt!
+  "fee growth global of token 1"
   feeGrowthGlobal1X128: BigInt!
+  "Hypervisors using this pool"
   hypervisors: [Hypervisor!]! @derivedFrom(field: "pool")
+  "Ticks for this pool"
   ticks: [Tick!]! @derivedFrom(field: "pool")
+  "Last updated block for fee growth"
+  lastUpdatedBlock: BigInt!
+    "Ticks currently used for lower and upper ticks in associated hypervisors"
+  _ticksActive: [Int!]!
 }
 
 type Tick @entity {
   "{pool}#{TickIdx}"
-  id: ID!
+  id: String!
+  "Pool this tick is associated with"
   pool: Pool!
-  tickIdx: BigInt!
+  "Tick index"
+  tickIdx: Int!
+  "Fee growth outside of token 0"
   feeGrowthOutside0X128: BigInt!
+  "Fee growth outside of token 1"
   feeGrowthOutside1X128: BigInt!
+  "Block in which tick was last updated for fee growth"
+  lastUpdatedBlock: BigInt!
 }

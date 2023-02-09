@@ -1,45 +1,188 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import { Tick } from "../../generated/schema";
-import { Pool as PoolContract } from "../../generated/templates/Pool/Pool";
-import { getOrCreatePool, getOrCreateTick } from "./entities";
+import {
+  algebraPositionKey,
+  updateAlgebraFeeGrowthOutside,
+} from "./algebra";
+import { BASE_POSITION, LIMIT_POSITION } from "./constants";
+import {
+  getOrCreateHypervisor,
+  getOrCreateHypervisorPosition,
+  getOrCreatePool,
+  getOrCreateProtocol,
+  getOrCreateTick,
+} from "./entities";
+import {
+  uniswapV3PositionKey,
+  updateUniswapV3FeeGrowthOutside,
+} from "./uniswapV3";
 
-export function updateFeeGrowthGlobal(poolAddress: Address): void {
-  const pool = getOrCreatePool(poolAddress);
-  const poolContract = PoolContract.bind(poolAddress);
-  pool.feeGrowthGlobal0X128 = poolContract.feeGrowthGlobal0X128();
-  pool.feeGrowthGlobal1X128 = poolContract.feeGrowthGlobal1X128();
-
-  pool.save();
+export function updatePositionFees(
+  hypervisorAddress: Address,
+  positionType: string,
+  liquidity: BigInt,
+  tokensOwed0: BigInt,
+  tokensOwed1: BigInt,
+  feeGrowthInside0X128: BigInt,
+  feeGrowthInside1X128: BigInt
+): void {
+  const hypervisorPosition = getOrCreateHypervisorPosition(
+    hypervisorAddress,
+    positionType
+  );
+  hypervisorPosition.liquidity = liquidity;
+  hypervisorPosition.tokensOwed0 = tokensOwed0;
+  hypervisorPosition.tokensOwed1 = tokensOwed1;
+  hypervisorPosition.feeGrowthInside0X128 = feeGrowthInside0X128;
+  hypervisorPosition.feeGrowthInside1X128 = feeGrowthInside1X128;
+  hypervisorPosition.save();
 }
 
-export function updateTick(poolAddress: Address, tickIdx: i32): void {
+export function updateFeeGrowthOutside(
+  poolAddress: Address,
+  tickIdx: i32,
+  feeGrowthOutside0X128: BigInt,
+  feeGrowthOutside1X128: BigInt,
+  blockNumber: BigInt
+): void {
   const tick = getOrCreateTick(poolAddress, tickIdx);
-
-  const poolContract = PoolContract.bind(poolAddress);
-  const tickResult = poolContract.ticks(tickIdx);
-  tick.feeGrowthOutside0X128 = tickResult.getFeeGrowthOutside0X128();
-  tick.feeGrowthOutside1X128 = tickResult.getFeeGrowthOutside1X128();
-  
+  tick.feeGrowthOutside0X128 = feeGrowthOutside0X128;
+  tick.feeGrowthOutside1X128 = feeGrowthOutside1X128;
+  tick.lastUpdatedBlock = blockNumber;
   tick.save();
 }
 
-
-export function updateTickIfExist(poolAddress: Address, tickIdx: i32): void {
-  const tick = Tick.load(
-    poolAddress
-      .toHex()
-      .concat('#')
-      .concat(tickIdx.toString())
-  )
-  if (tick !== null) {
-    updateTick(poolAddress, tickIdx)
-  }
+export function updateFeeGrowthGlobal(
+  poolAddress: Address,
+  feeGrowthGlobal0X128: BigInt,
+  feeGrowthGlobal1X128: BigInt,
+  blockNumber: BigInt
+): void {
+  const pool = getOrCreatePool(poolAddress);
+  pool.feeGrowthGlobal0X128 = feeGrowthGlobal0X128;
+  pool.feeGrowthGlobal1X128 = feeGrowthGlobal1X128;
+  pool.lastUpdatedBlock = blockNumber;
+  pool.save();
 }
 
-export function feeTierToTickSpacing(feeTier: BigInt): BigInt {
-  if (feeTier.equals(BigInt.fromI32(100))) {
-    return BigInt.fromI32(1)
+export function updateHypervisorRanges(
+  hypervisorAddress: Address,
+  positionType: string,
+  blockNumber: BigInt
+): void {
+  const protocol = getOrCreateProtocol();
+  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
+  const poolAddress = Address.fromBytes(hypervisor.pool);
+
+  const hypervisorContract = HypervisorContract.bind(hypervisorAddress);
+
+  const position = getOrCreateHypervisorPosition(
+    hypervisorAddress,
+    positionType
+  );
+
+  const oldTickLower = Tick.load(position.tickLower);
+  const oldTickUpper = Tick.load(position.tickUpper);
+
+  let newTickLower = 0;
+  let newTickUpper = 0;
+  if (positionType == BASE_POSITION) {
+    newTickLower = hypervisorContract.baseLower();
+    newTickUpper = hypervisorContract.baseUpper();
+  } else if (positionType == LIMIT_POSITION) {
+    newTickLower = hypervisorContract.limitLower();
+    newTickUpper = hypervisorContract.limitUpper();
   }
 
-  return feeTier.div(BigInt.fromI32(50))
+  if (protocol.underlyingProtocol == "algebra") {
+    position.key = algebraPositionKey(
+      hypervisorAddress,
+      newTickLower,
+      newTickUpper
+    );
+  } else {
+    position.key = uniswapV3PositionKey(
+      hypervisorAddress,
+      newTickLower,
+      newTickUpper
+    );
+  }
+
+  const tickLower = getOrCreateTick(poolAddress, newTickLower);
+  const tickUpper = getOrCreateTick(poolAddress, newTickUpper);
+
+  // Initialize feeGrowth fields
+  if (protocol.underlyingProtocol == "algebra") {
+    updateAlgebraFeeGrowthOutside(poolAddress, newTickLower, blockNumber);
+    updateAlgebraFeeGrowthOutside(poolAddress, newTickUpper, blockNumber);
+  } else {
+    updateUniswapV3FeeGrowthOutside(poolAddress, newTickLower, blockNumber);
+    updateUniswapV3FeeGrowthOutside(poolAddress, newTickUpper, blockNumber);
+  }
+
+  position.tickLower = tickLower.id;
+  position.tickUpper = tickUpper.id;
+  position.save();
+
+  // Update activeTicks in pool
+  updateActiveTicks(
+    poolAddress,
+    [oldTickLower!.tickIdx, oldTickUpper!.tickIdx],
+    [newTickLower, newTickUpper]
+  );
+}
+
+export function hypervisorPositionOutdated(
+  hypervisorAddress: Address,
+  positionType: string,
+  testBlock: BigInt
+): boolean {
+  const position = getOrCreateHypervisorPosition(
+    hypervisorAddress,
+    positionType
+  );
+  return testBlock > position.lastUpdatedBlock;
+}
+
+export function poolOutdated(poolAddress: Address, testBlock: BigInt): boolean {
+  const pool = getOrCreatePool(poolAddress);
+  return testBlock > pool.lastUpdatedBlock;
+}
+
+export function tickOutdated(
+  poolAddress: Address,
+  tickIdx: i32,
+  testBlock: BigInt
+): boolean {
+  const tick = getOrCreateTick(poolAddress, tickIdx);
+  return testBlock > tick.lastUpdatedBlock;
+}
+
+export function getActiveTicks(poolAddress: Address): i32[] {
+  const pool = getOrCreatePool(poolAddress);
+  return pool._ticksActive;
+}
+
+function updateActiveTicks(
+  poolAddress: Address,
+  ticksOld: i32[],
+  ticksNew: i32[]
+): void {
+  const pool = getOrCreatePool(poolAddress);
+  let activeTicks = new Set<i32>();
+  for (let i = 0; i < pool._ticksActive.length; i++) {
+    activeTicks.add(pool._ticksActive[i]);
+  }
+
+  for (let i = 0; i < ticksNew.length; i++) {
+    activeTicks.add(ticksNew[i]);
+  }
+
+  for (let i = 0; i < ticksOld.length; i++) {
+    activeTicks.delete(ticksOld[i]);
+  }
+
+  pool._ticksActive = activeTicks.values();
+  pool.save();
 }
