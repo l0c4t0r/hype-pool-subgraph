@@ -12,24 +12,28 @@ export function handleDeposit(event: Deposit): void {
   updateUniswapV3PoolPositionFees(
     event.address,
     BASE_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
   updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
 }
 export function handleWithdraw(event: Withdraw): void {
   updateUniswapV3PoolPositionFees(
     event.address,
     BASE_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
   updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
 }
 export function handleRebalance(event: Rebalance): void {
@@ -40,12 +44,14 @@ export function handleRebalance(event: Rebalance): void {
   updateUniswapV3PoolPositionFees(
     event.address,
     BASE_POSITION,
-    event.block.number
+    event.block.number,
+    true
   );
   updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
-    event.block.number
+    event.block.number,
+    true
   );
 }
 
@@ -53,11 +59,13 @@ export function handleZeroBurn(event: ZeroBurn): void {
   updateUniswapV3PoolPositionFees(
     event.address,
     BASE_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
   updateUniswapV3PoolPositionFees(
     event.address,
     LIMIT_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
 }

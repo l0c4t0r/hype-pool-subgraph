@@ -1,10 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import { Tick } from "../../generated/schema";
-import {
-  algebraPositionKey,
-  updateAlgebraFeeGrowthOutside,
-} from "./algebra";
+import { algebraPositionKey, updateAlgebraFeeGrowthOutside } from "./algebra";
 import { BASE_POSITION, LIMIT_POSITION } from "./constants";
 import {
   getOrCreateHypervisor,
@@ -25,7 +22,8 @@ export function updatePositionFees(
   tokensOwed0: BigInt,
   tokensOwed1: BigInt,
   feeGrowthInside0X128: BigInt,
-  feeGrowthInside1X128: BigInt
+  feeGrowthInside1X128: BigInt,
+  blockNumber: BigInt
 ): void {
   const hypervisorPosition = getOrCreateHypervisorPosition(
     hypervisorAddress,
@@ -36,6 +34,7 @@ export function updatePositionFees(
   hypervisorPosition.tokensOwed1 = tokensOwed1;
   hypervisorPosition.feeGrowthInside0X128 = feeGrowthInside0X128;
   hypervisorPosition.feeGrowthInside1X128 = feeGrowthInside1X128;
+  hypervisorPosition.lastUpdatedBlock = blockNumber;
   hypervisorPosition.save();
 }
 
@@ -133,7 +132,7 @@ export function updateHypervisorRanges(
   );
 }
 
-export function hypervisorPositionOutdated(
+export function hypervisorPositionUpToDate(
   hypervisorAddress: Address,
   positionType: string,
   testBlock: BigInt
@@ -142,21 +141,21 @@ export function hypervisorPositionOutdated(
     hypervisorAddress,
     positionType
   );
-  return testBlock > position.lastUpdatedBlock;
+  return testBlock <= position.lastUpdatedBlock;
 }
 
-export function poolOutdated(poolAddress: Address, testBlock: BigInt): boolean {
+export function poolUpToDate(poolAddress: Address, testBlock: BigInt): boolean {
   const pool = getOrCreatePool(poolAddress);
-  return testBlock > pool.lastUpdatedBlock;
+  return testBlock <= pool.lastUpdatedBlock;
 }
 
-export function tickOutdated(
+export function tickUpToDate(
   poolAddress: Address,
   tickIdx: i32,
   testBlock: BigInt
 ): boolean {
   const tick = getOrCreateTick(poolAddress, tickIdx);
-  return testBlock > tick.lastUpdatedBlock;
+  return testBlock <= tick.lastUpdatedBlock;
 }
 
 export function getActiveTicks(poolAddress: Address): i32[] {
@@ -175,7 +174,7 @@ function updateActiveTicks(
   for (let i = 0; i < pool._ticksActive.length; i++) {
     activeTicks.add(pool._ticksActive[i]);
   }
-  
+
   // Delete old before adding new in case rebalance ranges are the same
   for (let i = 0; i < ticksOld.length; i++) {
     activeTicks.delete(ticksOld[i]);

@@ -7,18 +7,31 @@ export function handleRebalance(event: Rebalance): void {
   // Set ranges
   updateHypervisorRanges(event.address, BASE_POSITION, event.block.number);
   updateHypervisorRanges(event.address, LIMIT_POSITION, event.block.number);
-  // Update position is handled in ZeroBurn
+  updateAlgebraPoolPositionFees(
+    event.address,
+    BASE_POSITION,
+    event.block.number,
+    true
+  );
+  updateAlgebraPoolPositionFees(
+    event.address,
+    LIMIT_POSITION,
+    event.block.number,
+    true
+  );
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {
   updateAlgebraPoolPositionFees(
     event.address,
     BASE_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
   updateAlgebraPoolPositionFees(
     event.address,
     LIMIT_POSITION,
-    event.block.number
+    event.block.number,
+    false
   );
 }

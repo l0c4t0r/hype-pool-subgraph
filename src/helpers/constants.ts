@@ -1,6 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.3.0";
 
 export const BASE_POSITION = "base";
 export const LIMIT_POSITION = "limit";

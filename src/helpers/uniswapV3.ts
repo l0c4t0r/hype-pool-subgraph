@@ -9,9 +9,9 @@ import {
 import { Pool } from "../../generated/schema";
 import { UniswapV3Pool as PoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
 import {
-  hypervisorPositionOutdated,
-  poolOutdated,
-  tickOutdated,
+  hypervisorPositionUpToDate,
+  poolUpToDate,
+  tickUpToDate,
   updateFeeGrowthGlobal,
   updateFeeGrowthOutside,
   updatePositionFees,
@@ -44,7 +44,7 @@ export function updateUniswapV3FeeGrowthGlobal(
   poolAddress: Address,
   blockNumber: BigInt
 ): void {
-  if (!poolOutdated(poolAddress, blockNumber)) {
+  if (poolUpToDate(poolAddress, blockNumber)) {
     return;
   }
   const poolContract = PoolContract.bind(poolAddress);
@@ -61,7 +61,7 @@ export function updateUniswapV3FeeGrowthOutside(
   tickIdx: i32,
   blockNumber: BigInt
 ): void {
-  if (!tickOutdated(poolAddress, tickIdx, blockNumber)) {
+  if (tickUpToDate(poolAddress, tickIdx, blockNumber)) {
     return;
   }
   const poolContract = PoolContract.bind(poolAddress);
@@ -79,10 +79,12 @@ export function updateUniswapV3FeeGrowthOutside(
 export function updateUniswapV3PoolPositionFees(
   hypervisorAddress: Address,
   positionType: string,
-  blockNumber: BigInt
+  blockNumber: BigInt,
+  forceUpdate: boolean = false
 ): void {
   if (
-    !hypervisorPositionOutdated(hypervisorAddress, positionType, blockNumber)
+    hypervisorPositionUpToDate(hypervisorAddress, positionType, blockNumber) &&
+    !forceUpdate
   ) {
     return;
   }
@@ -106,7 +108,8 @@ export function updateUniswapV3PoolPositionFees(
     position.getTokensOwed0(),
     position.getTokensOwed1(),
     position.getFeeGrowthInside0LastX128(),
-    position.getFeeGrowthInside1LastX128()
+    position.getFeeGrowthInside1LastX128(),
+    blockNumber
   );
 }
 

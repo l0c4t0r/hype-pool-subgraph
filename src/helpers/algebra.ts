@@ -2,9 +2,9 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Pool } from "../../generated/schema";
 import { AlgebraPool as PoolContract } from "../../generated/templates/Pool/AlgebraPool";
 import {
-  hypervisorPositionOutdated,
-  poolOutdated,
-  tickOutdated,
+  hypervisorPositionUpToDate,
+  poolUpToDate,
+  tickUpToDate,
   updateFeeGrowthGlobal,
   updateFeeGrowthOutside,
   updatePositionFees,
@@ -37,7 +37,7 @@ export function updateAlgebraFeeGrowthGlobal(
   poolAddress: Address,
   blockNumber: BigInt
 ): void {
-  if (!poolOutdated(poolAddress, blockNumber)) {
+  if (poolUpToDate(poolAddress, blockNumber)) {
     return;
   }
   const poolContract = PoolContract.bind(poolAddress);
@@ -54,7 +54,7 @@ export function updateAlgebraFeeGrowthOutside(
   tickIdx: i32,
   blockNumber: BigInt
 ): void {
-  if (!tickOutdated(poolAddress, tickIdx, blockNumber)) {
+  if (tickUpToDate(poolAddress, tickIdx, blockNumber)) {
     return;
   }
   const poolContract = PoolContract.bind(poolAddress);
@@ -72,10 +72,12 @@ export function updateAlgebraFeeGrowthOutside(
 export function updateAlgebraPoolPositionFees(
   hypervisorAddress: Address,
   positionType: string,
-  blockNumber: BigInt
+  blockNumber: BigInt,
+  forceUpdate: boolean = false
 ): void {
   if (
-    !hypervisorPositionOutdated(hypervisorAddress, positionType, blockNumber)
+    hypervisorPositionUpToDate(hypervisorAddress, positionType, blockNumber) &&
+    !forceUpdate
   ) {
     return;
   }
@@ -99,7 +101,8 @@ export function updateAlgebraPoolPositionFees(
     position.getFees0(),
     position.getFees1(),
     position.getInnerFeeGrowth0Token(),
-    position.getInnerFeeGrowth1Token()
+    position.getInnerFeeGrowth1Token(),
+    blockNumber
   );
 }
 
