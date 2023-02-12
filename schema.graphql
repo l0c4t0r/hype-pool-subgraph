@@ -16,6 +16,16 @@ enum HypervisorPositionType {
   limit
 }
 
+enum FeeCollectionSnapshotType {
+  current
+  previous
+}
+
+enum TickType {
+  lower
+  upper
+}
+
 type Protocol @entity(immutable: true) {
   "Hypervisor registry address"
   id: String!
@@ -29,17 +39,23 @@ type Protocol @entity(immutable: true) {
   version: String!
 }
 
-type Hypervisor @entity {
+type Hypervisor @entity(immutable: true) {
   "Address of hypervisor"
   id: Bytes!
   "Address of underlying pool"
   pool: Pool!
+  "Token 0"
+  token0: Token!
+  "Token 1"
+  token1: Token!
   "Base position attributes"
   basePosition: HypervisorPosition!
   "limit position attributes"
   limitPosition: HypervisorPosition!
-}
+  "Fee snapshots"
+  feeSnapshots: [FeeSnapshot!]! @derivedFrom(field: "hypervisor")
 
+}
 
 type HypervisorPosition @entity {
   "{Hypervisor ID}-{Position Type}"
@@ -55,7 +71,7 @@ type HypervisorPosition @entity {
   "The upper tick for this position range"
   tickUpper: Tick!
   "Liquidity associated with this position"
-  liquidity: BigInt
+  liquidity: BigInt!
   "Token 0 owed"
   tokensOwed0: BigInt!
   "Token 1 owed"
@@ -85,8 +101,14 @@ type Pool @entity {
   ticks: [Tick!]! @derivedFrom(field: "pool")
   "Last updated block for fee growth"
   lastUpdatedBlock: BigInt!
-    "Ticks currently used for lower and upper ticks in associated hypervisors"
+  "Ticks currently used for lower and upper ticks in associated hypervisors"
   _ticksActive: [Int!]!
+  "Previous tick"
+  _previousTick: Int!
+  "fee growth global of token 0 from before latest update"
+  _previousFeeGrowthGlobal0X128: BigInt!
+  "fee growth global of token 1 from before latest update"
+  _previousFeeGrowthGlobal1X128: BigInt!
 }
 
 type Tick @entity {
@@ -102,4 +124,90 @@ type Tick @entity {
   feeGrowthOutside1X128: BigInt!
   "Block in which tick was last updated for fee growth"
   lastUpdatedBlock: BigInt!
+  "Previous tick"
+  _previousTickIdx: Int!
+  "fee growth global of token 0 from before latest update"
+  _previousFeeGrowthOutside0X128: BigInt!
+  "fee growth global of token 1 from before latest update"
+  _previousFeeGrowthOutside1X128: BigInt!
+}
+
+type Token @entity(immutable: true) {
+  "token address"
+  id: Bytes!
+  "token symbol"
+  symbol: String!
+  "token name"
+  name: String!
+  "token decimals"
+  decimals: Int!
+}
+
+type FeeSnapshot @entity(immutable: true) {
+  "{hypervisor}-{block}"
+  id: String!
+  hypervisor: Hypervisor!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  previousBlock: FeeCollectionSnapshot!
+  currentBlock: FeeCollectionSnapshot!
+}
+
+type FeeCollectionSnapshot @entity {
+  "{Fee Snapshot ID}-{FeeCollectionSnapshotType}"
+  id: String!
+  "Pool tick"
+  type: FeeCollectionSnapshotType!
+  "Parent feeSnapshot entity ID"
+  feeSnapshot: FeeSnapshot!
+  "Pool tick"
+  tick: Int!
+  "fee growth global of token 0"
+  feeGrowthGlobal0X128: BigInt!
+  "fee growth global of token 1"
+  feeGrowthGlobal1X128: BigInt!
+  "Base position snapshot"
+  basePosition: PositionSnapshot!
+  "Limit position snapshot"
+  limitPosition: PositionSnapshot!
+  "Inidicates whether entity has been initialised with data"
+  _initialized: Boolean!
+}
+
+type PositionSnapshot @entity {
+  "{feeCollectionSnapshot ID}-{positionType}"
+  id: String!
+  "Position Type"
+  type: HypervisorPositionType!
+  "Parent fee collection snapshot"
+  feeCollectionSnapshot: FeeCollectionSnapshot!
+  "The lower tick for this position range"
+  tickLower: TickSnapshot!
+  "The upper tick for this position range"
+  tickUpper: TickSnapshot!
+  "Liquidity associated with this position"
+  liquidity: BigInt!
+  "Token 0 owed"
+  tokensOwed0: BigInt!
+  "Token 1 owed"
+  tokensOwed1: BigInt!
+  "Fee growth inside of token 0"
+  feeGrowthInside0X128: BigInt!
+  "Fee growth inside of token 1"
+  feeGrowthInside1X128: BigInt!
+}
+
+type TickSnapshot @entity {
+  "{Position Snapshot ID}-{Tick Type}"
+  id: String!
+  "Tick type"
+  type: TickType!
+  "Parent position snapshot"
+  positionSnapshot: PositionSnapshot!
+  "The lower tick for this position range"
+  tickIdx: Int!
+  "Fee growth outside of token 0"
+  feeGrowthOutside0X128: BigInt!
+  "Fee growth outside of token 1"
+  feeGrowthOutside1X128: BigInt!
 }

@@ -46,6 +46,13 @@ export function updateFeeGrowthOutside(
   blockNumber: BigInt
 ): void {
   const tick = getOrCreateTick(poolAddress, tickIdx);
+
+  // Only store prev values the first time to prevent overwritten by forced update
+  if (blockNumber > tick.lastUpdatedBlock) {
+    tick._previousTickIdx = tick.tickIdx
+    tick._previousFeeGrowthOutside0X128 = tick.feeGrowthOutside0X128
+    tick._previousFeeGrowthOutside1X128 = tick.feeGrowthOutside1X128
+  }
   tick.feeGrowthOutside0X128 = feeGrowthOutside0X128;
   tick.feeGrowthOutside1X128 = feeGrowthOutside1X128;
   tick.lastUpdatedBlock = blockNumber;
@@ -59,6 +66,13 @@ export function updateFeeGrowthGlobal(
   blockNumber: BigInt
 ): void {
   const pool = getOrCreatePool(poolAddress);
+
+  // Only store prev values the first time to prevent overwritten by forced update
+  if (blockNumber > pool.lastUpdatedBlock) {
+    pool._previousTick = pool.currentTick
+    pool._previousFeeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128
+    pool._previousFeeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128
+  }
   pool.feeGrowthGlobal0X128 = feeGrowthGlobal0X128;
   pool.feeGrowthGlobal1X128 = feeGrowthGlobal1X128;
   pool.lastUpdatedBlock = blockNumber;
