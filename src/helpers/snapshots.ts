@@ -100,9 +100,9 @@ export function updateFeeCollectionSnapshot(
     feeCollectionSnapshot.price0 = token0.priceUSD;
   }
   if (snapshotType == PREVIOUS_BLOCK && block <= token1.lastUpdatedBlock) {
-    feeCollectionSnapshot.price0 = token1._previousPriceUSD;
+    feeCollectionSnapshot.price1 = token1._previousPriceUSD;
   } else {
-    feeCollectionSnapshot.price0 = token1.priceUSD;
+    feeCollectionSnapshot.price1 = token1.priceUSD;
   }
 
   feeCollectionSnapshot._initialized = true;
