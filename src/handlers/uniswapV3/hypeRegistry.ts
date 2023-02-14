@@ -11,6 +11,7 @@ import {
   getOrCreateHypervisor,
   getOrCreateProtocol,
 } from "../../helpers/entities";
+import { updateHypervisorList } from "../../helpers/pool";
 
 export function handleHypeAdded(event: HypeAdded): void {
   let hypervisor = Hypervisor.load(event.params.hype);
@@ -37,6 +38,8 @@ export function handleHypeAdded(event: HypeAdded): void {
 
     getOrCreateProtocol();
     hypervisor = getOrCreateHypervisor(event.params.hype);
+
+    updateHypervisorList(Address.fromBytes(hypervisor.pool), event.params.hype)
 
     HypervisorTemplate.create(event.params.hype);
     PoolTemplate.create(Address.fromBytes(hypervisor.pool));

@@ -13,6 +13,7 @@ import {
 } from "../../helpers/entities";
 import { updateHypervisorRanges } from "../../helpers/feeGrowth";
 import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
+import { updateHypervisorList } from "../../helpers/pool";
 
 export function handleHypeAdded(event: HypeAdded): void {
   let hypervisor = Hypervisor.load(event.params.hype);
@@ -39,6 +40,8 @@ export function handleHypeAdded(event: HypeAdded): void {
 
     getOrCreateProtocol();
     hypervisor = getOrCreateHypervisor(event.params.hype);
+    
+    updateHypervisorList(Address.fromBytes(hypervisor.pool), event.params.hype)
 
     // Initialize ranges as hype may be added to registry after a rebalance
     updateHypervisorRanges(event.params.hype, BASE_POSITION, event.block.number)

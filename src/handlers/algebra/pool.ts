@@ -10,10 +10,17 @@ import {
   updateAlgebraFeeGrowthOutside,
 } from "../../helpers/algebra";
 import { getOrCreatePool } from "../../helpers/entities";
-import { updatePoolTick } from "../../helpers/pool";
+import {
+  poolMatchesUnderlyingProtocol,
+  updateLinkedHypervisorTvl,
+  updatePoolPricing,
+} from "../../helpers/pool";
 import { tickCrossed } from "../../helpers/ticks";
 
 export function handleMint(event: Mint): void {
+  if (!poolMatchesUnderlyingProtocol(event.address)) {
+    return;
+  }
   // Only need to update feeGrowthOutside on ticks that we care about
   const activeTicks = getActiveTicks(event.address);
   if (activeTicks.includes(event.params.bottomTick)) {
@@ -33,6 +40,9 @@ export function handleMint(event: Mint): void {
 }
 
 export function handleBurn(event: Burn): void {
+  if (!poolMatchesUnderlyingProtocol(event.address)) {
+    return;
+  }
   // Only need to update feeGrowthOutside on ticks that we care about
   const activeTicks = getActiveTicks(event.address);
   if (activeTicks.includes(event.params.bottomTick)) {
@@ -52,6 +62,17 @@ export function handleBurn(event: Burn): void {
 }
 
 export function handleSwap(event: Swap): void {
+  updatePoolPricing(
+    event.address,
+    event.params.tick,
+    event.params.price,
+    event.block
+  );
+  
+  if (!poolMatchesUnderlyingProtocol(event.address)) {
+    return;
+  }
+
   const pool = getOrCreatePool(event.address);
   const activeTicks = getActiveTicks(event.address);
   for (let i = 0; i < activeTicks.length; i++) {
@@ -63,11 +84,15 @@ export function handleSwap(event: Swap): void {
       );
     }
   }
-  updatePoolTick(event.address, event.params.tick);
+  updateLinkedHypervisorTvl(event.address, event.block);
   updateAlgebraFeeGrowthGlobal(event.address, event.block.number);
 }
 
 export function handleFlash(event: Flash): void {
+  const pool = getOrCreatePool(event.address);
+  if (!poolMatchesUnderlyingProtocol(event.address)) {
+    return;
+  }
   // update globals, tick doesn't move for flash
   updateAlgebraFeeGrowthGlobal(event.address, event.block.number);
 }

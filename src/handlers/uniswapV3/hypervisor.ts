@@ -8,6 +8,7 @@ import { updateHypervisorRanges } from "../../helpers/feeGrowth";
 import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
 import { updateUniswapV3PoolPositionFees } from "../../helpers/uniswapV3";
 import { updateSnapshotCurrentBlock, updateSnapshotPreviousBlock } from "../../helpers/snapshots";
+import { updateTvl } from "../../helpers/hypervisor";
 
 export function handleDeposit(event: Deposit): void {
   updateSnapshotPreviousBlock(
@@ -27,10 +28,10 @@ export function handleDeposit(event: Deposit): void {
     event.block.number,
     false
   );
+  updateTvl(event.address, event.block.number)
   updateSnapshotCurrentBlock(
     event.address,
     event.block.number,
-    event.block.timestamp,
     false
   );
 }
@@ -52,10 +53,10 @@ export function handleWithdraw(event: Withdraw): void {
     event.block.number,
     false
   );
+  updateTvl(event.address, event.block.number)
   updateSnapshotCurrentBlock(
     event.address,
     event.block.number,
-    event.block.timestamp,
     false
   );
 }
@@ -82,10 +83,10 @@ export function handleRebalance(event: Rebalance): void {
     event.block.number,
     true
   );
+  updateTvl(event.address, event.block.number)
   updateSnapshotCurrentBlock(
     event.address,
     event.block.number,
-    event.block.timestamp,
     true
   );
 }
@@ -108,10 +109,10 @@ export function handleZeroBurn(event: ZeroBurn): void {
     event.block.number,
     false
   );
+  updateTvl(event.address, event.block.number)
   updateSnapshotCurrentBlock(
     event.address,
     event.block.number,
-    event.block.timestamp,
     false
   );
 }

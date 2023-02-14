@@ -1,5 +1,6 @@
-import { Address, BigInt, dataSource } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, dataSource } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
+import { Pool as PoolTemplate } from "../../generated/templates";
 import {
   FeeCollectionSnapshot,
   FeeSnapshot,
@@ -11,8 +12,10 @@ import {
   Tick,
   TickSnapshot,
   Token,
+  _PoolPricing,
 } from "../../generated/schema";
 import {
+  ADDRESS_ZERO,
   BASE_POSITION,
   CURRENT_BLOCK,
   LIMIT_POSITION,
@@ -20,12 +23,14 @@ import {
   PREVIOUS_BLOCK,
   UPPER_TICK,
   VERSION,
+  ZERO_BD,
   ZERO_BI,
 } from "./constants";
 import { createAlgebraPool } from "./algebra";
 import { createUniswapV3Pool } from "./uniswapV3";
 import { protocolLookup } from "./lookups";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./token";
+import { BaseTokenDefinition } from "./baseTokenDefinition";
 
 export function getOrCreateProtocol(): Protocol {
   let protocol = Protocol.load("0");
@@ -68,15 +73,14 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
   if (!hypervisor) {
     hypervisor = new Hypervisor(hypervisorAddress);
     const hypervisorContract = HypervisorContract.bind(hypervisorAddress);
-
-    const pool = getOrCreatePool(hypervisorContract.pool());
+    hypervisor.symbol = hypervisorContract.symbol();
+    const poolAddress = hypervisorContract.pool();
+    const pool = getOrCreatePool(poolAddress);
     hypervisor.pool = pool.id;
 
-    const token0 = getOrCreateToken(hypervisorContract.token0())
-    const token1 = getOrCreateToken(hypervisorContract.token1())
-
-    hypervisor.token0 = token0.id
-    hypervisor.token1 = token1.id
+    hypervisor.tvl0 = ZERO_BI;
+    hypervisor.tvl1 = ZERO_BI;
+    hypervisor.tvlUSD = ZERO_BD;
 
     const basePosition = getOrCreateHypervisorPosition(
       hypervisorAddress,
@@ -89,6 +93,11 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
 
     hypervisor.basePosition = basePosition.id;
     hypervisor.limitPosition = limitPosition.id;
+    hypervisor.lastUpdatedBlock = ZERO_BI;
+    hypervisor._previousTvl0 = ZERO_BI;
+    hypervisor._previousTvl1 = ZERO_BI;
+    hypervisor._previousTvlUSD = ZERO_BD;
+
     hypervisor.save();
 
     pool.save();
@@ -131,24 +140,32 @@ export function getOrCreateHypervisorPosition(
 }
 
 export function getOrCreatePool(poolAddress: Address): Pool {
-  const protocol = getOrCreateProtocol();
   let pool = Pool.load(poolAddress);
   if (!pool) {
-    if (protocol.underlyingProtocol == "uniswapV3") {
-      pool = createUniswapV3Pool(poolAddress);
-    } else if (protocol.underlyingProtocol == "algebra") {
+    pool = createUniswapV3Pool(poolAddress);
+    if (!pool) {
       pool = createAlgebraPool(poolAddress);
     }
+
     if (pool) {
+      pool._hypervisors = [];
       pool._ticksActive = [];
+      pool.pricing = poolAddress;
       pool.lastUpdatedBlock = ZERO_BI;
+      pool.lastHypervisorRefreshTime = ZERO_BI;
       pool._previousTick = 0;
       pool._previousFeeGrowthGlobal0X128 = ZERO_BI;
       pool._previousFeeGrowthGlobal1X128 = ZERO_BI;
       pool.save();
-    } else {
+
+      getOrCreatePoolPricing(
+        poolAddress,
+        Address.fromBytes(pool.token0),
+        Address.fromBytes(pool.token1)
+      );
     }
   }
+
   return pool!; // More serious issues if pool is null here
 }
 
@@ -181,6 +198,10 @@ export function getOrCreateToken(tokenAddress: Address): Token {
     token.symbol = fetchTokenSymbol(tokenAddress);
     token.name = fetchTokenName(tokenAddress);
     token.decimals = fetchTokenDecimals(tokenAddress);
+    token.priceUSD = ZERO_BD;
+    token.lastUpdatedBlock = ZERO_BI;
+    token.lastUpdatedTimestamp = ZERO_BI;
+    token._previousPriceUSD = ZERO_BD;
     token.save();
   }
   return token;
@@ -236,6 +257,11 @@ export function getOrCreateFeeCollectionSnapshot(
     feeCollectionSnapshot.type = snapshotType;
     feeCollectionSnapshot.feeSnapshot = feeSnapshotId;
     feeCollectionSnapshot.tick = 0;
+    feeCollectionSnapshot.price0 = ZERO_BD;
+    feeCollectionSnapshot.price1 = ZERO_BD;
+    feeCollectionSnapshot.tvl0 = ZERO_BI;
+    feeCollectionSnapshot.tvl1 = ZERO_BI;
+    feeCollectionSnapshot.tvlUSD = ZERO_BD;
     feeCollectionSnapshot.feeGrowthGlobal0X128 = ZERO_BI;
     feeCollectionSnapshot.feeGrowthGlobal1X128 = ZERO_BI;
 
@@ -341,4 +367,62 @@ export function getOrCreateTickSnapshot(
     tickSnapshot.save();
   }
   return tickSnapshot;
+}
+
+export function getOrCreatePoolPricing(
+  poolAddress: Address,
+  token0Address: Address,
+  token1Address: Address
+): _PoolPricing {
+  let pricing = _PoolPricing.load(poolAddress);
+
+  if (!pricing) {
+    pricing = new _PoolPricing(poolAddress);
+
+    let baseTokenLookup = BaseTokenDefinition.network(dataSource.network());
+    let token0Lookup = baseTokenLookup.get(token0Address.toHex());
+    if (token0Lookup == null) {
+      token0Lookup = BaseTokenDefinition.nonBase();
+    }
+    let token1Lookup = baseTokenLookup.get(token1Address.toHex());
+    if (token1Lookup == null) {
+      token1Lookup = BaseTokenDefinition.nonBase();
+    }
+
+    // Reference arrays are in reverse order of priority. i.e. larger index take precedence
+    if (token0Lookup.priority > token1Lookup.priority) {
+      // token0 is the base token
+      pricing.baseToken = token0Address;
+      pricing.baseTokenIndex = 0;
+      pricing.usdPath = token0Lookup.path;
+      pricing.usdPathIndex = token0Lookup.pathIdx;
+    } else if (token1Lookup.priority > token0Lookup.priority) {
+      // token1 is the base token
+      pricing.baseToken = token1Address;
+      pricing.baseTokenIndex = 1;
+      pricing.usdPath = token1Lookup.path;
+      pricing.usdPathIndex = token1Lookup.pathIdx;
+    } else {
+      // This means token0 == token1 == -1, unidentified base token
+      pricing.baseToken = Bytes.fromHexString(ADDRESS_ZERO);
+      pricing.baseTokenIndex = -1;
+      pricing.usdPath = [ADDRESS_ZERO];
+      pricing.usdPathIndex = [-1];
+    }
+    pricing.priceTokenInBase = ZERO_BD;
+    pricing.priceBaseInUSD = ZERO_BD;
+    pricing.save();
+
+    for (let i = 0; i < pricing.usdPath.length; i++) {
+      if (pricing.usdPath[i] != ADDRESS_ZERO) {
+        let pathPoolAddress = Address.fromString(pricing.usdPath[i]);
+        let pool = Pool.load(pathPoolAddress);
+        if (!pool) {
+          pool = getOrCreatePool(pathPoolAddress);
+          PoolTemplate.create(pathPoolAddress);
+        }
+      }
+    }
+  }
+  return pricing;
 }

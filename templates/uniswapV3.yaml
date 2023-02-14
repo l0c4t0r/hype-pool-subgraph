@@ -87,6 +87,8 @@ templates:
         - Pool
         - Tick
       abis:
+        - name: Hypervisor
+          file: ./abis/Hypervisor.json
         - name: Pool
           file: ./abis/UniswapV3Pool.json
         - name: UniswapV3Pool

@@ -20,6 +20,7 @@ import { encodeKey } from "./pool";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,
+  getOrCreateToken,
 } from "./entities";
 
 export function createUniswapV3Pool(poolAddress: Address): Pool | null {
@@ -31,11 +32,17 @@ export function createUniswapV3Pool(poolAddress: Address): Pool | null {
   }
 
   const pool = new Pool(poolAddress);
+  const token0 = getOrCreateToken(poolContract.token0());
+  const token1 = getOrCreateToken(poolContract.token1());
 
+  pool.token0 = token0.id;
+  pool.token1 = token1.id;
   pool.tickSpacing = tickSpacingFromFee(poolContract.fee());
   pool.currentTick = slot0.value.getTick();
+  pool.sqrtPriceX96 = slot0.value.getSqrtPriceX96()
   pool.feeGrowthGlobal0X128 = poolContract.feeGrowthGlobal0X128();
   pool.feeGrowthGlobal1X128 = poolContract.feeGrowthGlobal0X128();
+  pool._protocol = "uniswapV3"
 
   return pool;
 }

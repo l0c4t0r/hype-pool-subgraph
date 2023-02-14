@@ -13,6 +13,7 @@ import { encodeKey } from "./pool";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,
+  getOrCreateToken,
 } from "./entities";
 
 export function createAlgebraPool(poolAddress: Address): Pool | null {
@@ -25,10 +26,17 @@ export function createAlgebraPool(poolAddress: Address): Pool | null {
 
   const pool = new Pool(poolAddress);
 
+  const token0 = getOrCreateToken(poolContract.token0());
+  const token1 = getOrCreateToken(poolContract.token1());
+
+  pool.token0 = token0.id;
+  pool.token1 = token1.id;
   pool.tickSpacing = BigInt.fromI32(poolContract.tickSpacing());
   pool.currentTick = globalState.value.getTick();
+  pool.sqrtPriceX96 = globalState.value.getPrice();
   pool.feeGrowthGlobal0X128 = poolContract.totalFeeGrowth0Token();
   pool.feeGrowthGlobal1X128 = poolContract.totalFeeGrowth1Token();
+  pool._protocol = "algebra"
 
   return pool;
 }

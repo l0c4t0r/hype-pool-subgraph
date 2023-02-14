@@ -16,6 +16,7 @@ import {
   getOrCreatePool,
   getOrCreatePositionSnapshot,
   getOrCreateTickSnapshot,
+  getOrCreateToken,
 } from "./entities";
 
 export function updateSnapshotPreviousBlock(
@@ -39,7 +40,6 @@ export function updateSnapshotPreviousBlock(
 export function updateSnapshotCurrentBlock(
   hypervisorAddress: Address,
   block: BigInt,
-  timestamp: BigInt,
   forceUpdate: boolean = false
 ): void {
   // Check if current block requires update
@@ -62,11 +62,24 @@ export function updateFeeCollectionSnapshot(
   const hypervisor = getOrCreateHypervisor(hypervisorAddress);
   const pool = getOrCreatePool(Address.fromBytes(hypervisor.pool));
 
+  const token0 = getOrCreateToken(Address.fromBytes(pool.token0));
+  const token1 = getOrCreateToken(Address.fromBytes(pool.token1));
+
   let feeCollectionSnapshot = getOrCreateFeeCollectionSnapshot(
     hypervisorAddress,
     block,
     snapshotType
   );
+
+  if (snapshotType == PREVIOUS_BLOCK && block <= hypervisor.lastUpdatedBlock) {
+    feeCollectionSnapshot.tvl0 = hypervisor._previousTvl0;
+    feeCollectionSnapshot.tvl1 = hypervisor._previousTvl1;
+    feeCollectionSnapshot.tvlUSD = hypervisor._previousTvlUSD;
+  } else {
+    feeCollectionSnapshot.tvl0 = hypervisor.tvl0;
+    feeCollectionSnapshot.tvl1 = hypervisor.tvl1;
+    feeCollectionSnapshot.tvlUSD = hypervisor.tvlUSD;
+  }
 
   if (snapshotType == PREVIOUS_BLOCK && block <= pool.lastUpdatedBlock) {
     // Pool was updated in the same block, snapshot previous values for previous block
@@ -79,6 +92,17 @@ export function updateFeeCollectionSnapshot(
     feeCollectionSnapshot.tick = pool.currentTick;
     feeCollectionSnapshot.feeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128;
     feeCollectionSnapshot.feeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128;
+  }
+
+  if (snapshotType == PREVIOUS_BLOCK && block <= token0.lastUpdatedBlock) {
+    feeCollectionSnapshot.price0 = token0._previousPriceUSD;
+  } else {
+    feeCollectionSnapshot.price0 = token0.priceUSD;
+  }
+  if (snapshotType == PREVIOUS_BLOCK && block <= token1.lastUpdatedBlock) {
+    feeCollectionSnapshot.price0 = token1._previousPriceUSD;
+  } else {
+    feeCollectionSnapshot.price0 = token1.priceUSD;
   }
 
   feeCollectionSnapshot._initialized = true;
