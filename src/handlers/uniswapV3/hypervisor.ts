@@ -5,67 +5,93 @@ import {
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
 import { updateHypervisorRanges } from "../../helpers/feeGrowth";
-import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
-import { updateUniswapV3PoolPositionFees } from "../../helpers/uniswapV3";
+import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_UNISWAP_V3 } from "../../helpers/constants";
+import {
+  updateSnapshotCurrentBlock,
+  updateSnapshotPreviousBlock,
+} from "../../helpers/snapshots";
+import { updateTvl } from "../../helpers/hypervisor";
+import { processZeroBurn } from "../common/hypervisor";
+import { updateProtocolPoolPositionFees } from "../../helpers/common";
+import { initFastSyncPools } from "../../helpers/fastSync";
 
 export function handleDeposit(event: Deposit): void {
-  updateUniswapV3PoolPositionFees(
+  updateSnapshotPreviousBlock(
+    event.address,
+    event.block.number,
+    event.block.timestamp
+  );
+  updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
+    PROTOCOL_UNISWAP_V3,
     false
   );
-  updateUniswapV3PoolPositionFees(
+  updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
+    PROTOCOL_UNISWAP_V3,
     false
   );
+  updateTvl(event.address, event.block.number);
+  updateSnapshotCurrentBlock(event.address, event.block.number, false);
+  initFastSyncPools(event.address, event.block)
 }
 export function handleWithdraw(event: Withdraw): void {
-  updateUniswapV3PoolPositionFees(
+  updateSnapshotPreviousBlock(
+    event.address,
+    event.block.number,
+    event.block.timestamp
+  );
+  updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
+    PROTOCOL_UNISWAP_V3,
     false
   );
-  updateUniswapV3PoolPositionFees(
+  updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
+    PROTOCOL_UNISWAP_V3,
     false
   );
+  updateTvl(event.address, event.block.number);
+  updateSnapshotCurrentBlock(event.address, event.block.number, false);
+  initFastSyncPools(event.address, event.block)
 }
 export function handleRebalance(event: Rebalance): void {
+  updateSnapshotPreviousBlock(
+    event.address,
+    event.block.number,
+    event.block.timestamp
+  );
   // Set ranges
-  updateHypervisorRanges(event.address, BASE_POSITION, event.block.number);
-  updateHypervisorRanges(event.address, LIMIT_POSITION, event.block.number);
+  updateHypervisorRanges(event.address, event.block.number, PROTOCOL_UNISWAP_V3);
   // Update positions
-  updateUniswapV3PoolPositionFees(
+  // Force updates on everything as rebalance changes ranges
+  updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
-    true
+    PROTOCOL_UNISWAP_V3,
+    false
   );
-  updateUniswapV3PoolPositionFees(
+  updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
-    true
+    PROTOCOL_UNISWAP_V3,
+    false
   );
+  updateTvl(event.address, event.block.number);
+  updateSnapshotCurrentBlock(event.address, event.block.number, true);
+  initFastSyncPools(event.address, event.block)
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {
-  updateUniswapV3PoolPositionFees(
-    event.address,
-    BASE_POSITION,
-    event.block.number,
-    false
-  );
-  updateUniswapV3PoolPositionFees(
-    event.address,
-    LIMIT_POSITION,
-    event.block.number,
-    false
-  );
+  processZeroBurn(event.address, event.block);
 }

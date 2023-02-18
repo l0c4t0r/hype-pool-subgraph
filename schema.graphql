@@ -1,4 +1,4 @@
-enum underlyingProtocol {
+enum UnderlyingProtocol {
   uniswapV3
   algebra
 }
@@ -16,13 +16,23 @@ enum HypervisorPositionType {
   limit
 }
 
+enum FeeCollectionSnapshotType {
+  current
+  previous
+}
+
+enum TickType {
+  lower
+  upper
+}
+
 type Protocol @entity(immutable: true) {
   "Hypervisor registry address"
   id: String!
   "Name of protocol"
   name: String!
   "Underlying infrastructure protocol"
-  underlyingProtocol: underlyingProtocol!
+  underlyingProtocol: UnderlyingProtocol!
   "Network/chain"
   network: Network!
   "Subgraph version"
@@ -32,14 +42,31 @@ type Protocol @entity(immutable: true) {
 type Hypervisor @entity {
   "Address of hypervisor"
   id: Bytes!
+  "symbol of hypervisor token"
+  symbol: String!
   "Address of underlying pool"
   pool: Pool!
+  "TVL of token 0"
+  tvl0: BigInt!
+  "TVL of token 1"
+  tvl1: BigInt!
+  "TVL in USD"
+  tvlUSD: BigDecimal!
   "Base position attributes"
   basePosition: HypervisorPosition!
   "limit position attributes"
   limitPosition: HypervisorPosition!
+  "Fee snapshots"
+  feeSnapshots: [FeeSnapshot!]! @derivedFrom(field: "hypervisor")
+  "Last updated block for TVL fields"
+  lastUpdatedBlock: BigInt!
+  "Previous TVL of token 0 before update"
+  _previousTvl0: BigInt!
+  "Previous TVL of token 1 before update"
+  _previousTvl1: BigInt!
+  "Previous TVL in USD before update"
+  _previousTvlUSD: BigDecimal!
 }
-
 
 type HypervisorPosition @entity {
   "{Hypervisor ID}-{Position Type}"
@@ -55,7 +82,7 @@ type HypervisorPosition @entity {
   "The upper tick for this position range"
   tickUpper: Tick!
   "Liquidity associated with this position"
-  liquidity: BigInt
+  liquidity: BigInt!
   "Token 0 owed"
   tokensOwed0: BigInt!
   "Token 1 owed"
@@ -71,10 +98,16 @@ type HypervisorPosition @entity {
 type Pool @entity {
   "Address of DEX pool"
   id: Bytes!
+  "Token 0"
+  token0: Token!
+  "Token 1"
+  token1: Token!
   "Tick spacing for pool"
   tickSpacing: BigInt!
   "Current tick"
   currentTick: Int!
+  "Pool price"
+  sqrtPriceX96: BigInt!
   "fee growth global of token 0"
   feeGrowthGlobal0X128: BigInt!
   "fee growth global of token 1"
@@ -83,10 +116,24 @@ type Pool @entity {
   hypervisors: [Hypervisor!]! @derivedFrom(field: "pool")
   "Ticks for this pool"
   ticks: [Tick!]! @derivedFrom(field: "pool")
+  "Pricing fields"
+  pricing: _PoolPricing!
   "Last updated block for fee growth"
   lastUpdatedBlock: BigInt!
-    "Ticks currently used for lower and upper ticks in associated hypervisors"
+  "Last timestamp when hypervisor list was updated with TVL"
+  lastHypervisorRefreshTime: BigInt!
+  "Hypervisors currently using pool"
+  _hypervisors: [String!]!
+  "Ticks currently used for lower and upper ticks in associated hypervisors"
   _ticksActive: [Int!]!
+  "Previous tick"
+  _previousTick: Int!
+  "fee growth global of token 0 from before latest update"
+  _previousFeeGrowthGlobal0X128: BigInt!
+  "fee growth global of token 1 from before latest update"
+  _previousFeeGrowthGlobal1X128: BigInt!
+  "Flag for pools that need fee growth updated"
+  _protocol: UnderlyingProtocol!
 }
 
 type Tick @entity {
@@ -102,4 +149,138 @@ type Tick @entity {
   feeGrowthOutside1X128: BigInt!
   "Block in which tick was last updated for fee growth"
   lastUpdatedBlock: BigInt!
+  "Previous tick"
+  _previousTickIdx: Int!
+  "fee growth global of token 0 from before latest update"
+  _previousFeeGrowthOutside0X128: BigInt!
+  "fee growth global of token 1 from before latest update"
+  _previousFeeGrowthOutside1X128: BigInt!
+}
+
+type Token @entity {
+  "token address"
+  id: Bytes!
+  "token symbol"
+  symbol: String!
+  "token name"
+  name: String!
+  "token decimals"
+  decimals: Int!
+  "token price in USD"
+  priceUSD: BigDecimal!
+  "last updated block for price"
+  lastUpdatedBlock: BigInt!
+  "last updated timestamp for price"
+  lastUpdatedTimestamp: BigInt!
+  "token price in USD before it was updated"
+  _previousPriceUSD: BigDecimal!
+}
+
+type FeeSnapshot @entity(immutable: true) {
+  "{hypervisor}-{block}"
+  id: String!
+  hypervisor: Hypervisor!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  previousBlock: FeeCollectionSnapshot!
+  currentBlock: FeeCollectionSnapshot!
+}
+
+type FeeCollectionSnapshot @entity {
+  "{Fee Snapshot ID}-{FeeCollectionSnapshotType}"
+  id: String!
+  "Pool tick"
+  type: FeeCollectionSnapshotType!
+  "Parent feeSnapshot entity ID"
+  feeSnapshot: FeeSnapshot!
+  "Pool tick"
+  tick: Int!
+  "Token 0 price"
+  price0: BigDecimal!
+  "Token1 price"
+  price1: BigDecimal!
+  "Token0 portion of TVL"
+  tvl0: BigInt!
+  "Token1 portion of TVL"
+  tvl1: BigInt!
+  "TVL in USD"
+  tvlUSD: BigDecimal!
+  "fee growth global of token 0"
+  feeGrowthGlobal0X128: BigInt!
+  "fee growth global of token 1"
+  feeGrowthGlobal1X128: BigInt!
+  "Base position snapshot"
+  basePosition: PositionSnapshot!
+  "Limit position snapshot"
+  limitPosition: PositionSnapshot!
+  "Inidicates whether entity has been initialised with data"
+  _initialized: Boolean!
+}
+
+type PositionSnapshot @entity {
+  "{feeCollectionSnapshot ID}-{positionType}"
+  id: String!
+  "Position Type"
+  type: HypervisorPositionType!
+  "Parent fee collection snapshot"
+  feeCollectionSnapshot: FeeCollectionSnapshot!
+  "The lower tick for this position range"
+  tickLower: TickSnapshot!
+  "The upper tick for this position range"
+  tickUpper: TickSnapshot!
+  "Liquidity associated with this position"
+  liquidity: BigInt!
+  "Token 0 owed"
+  tokensOwed0: BigInt!
+  "Token 1 owed"
+  tokensOwed1: BigInt!
+  "Fee growth inside of token 0"
+  feeGrowthInside0X128: BigInt!
+  "Fee growth inside of token 1"
+  feeGrowthInside1X128: BigInt!
+}
+
+type TickSnapshot @entity {
+  "{Position Snapshot ID}-{Tick Type}"
+  id: String!
+  "Tick type"
+  type: TickType!
+  "Parent position snapshot"
+  positionSnapshot: PositionSnapshot!
+  "The lower tick for this position range"
+  tickIdx: Int!
+  "Fee growth outside of token 0"
+  feeGrowthOutside0X128: BigInt!
+  "Fee growth outside of token 1"
+  feeGrowthOutside1X128: BigInt!
+}
+
+type _PoolPricing @entity {
+  "Pool ID"
+  id: Bytes!
+  "Whether the base token token0 or token1"
+  baseTokenIndex: Int!
+  "The base token"
+  baseToken: Token!
+  "The path of uniswap V3 pools for calculating USD value"
+  usdPath: [String!]!
+  "Whether the USD token in usdPool is token0 or token1"
+  usdPathIndex: [Int!]!
+  "Price of non-base token in terms of the base token"
+  priceTokenInBase: BigDecimal!
+  "Price of base token in USD"
+  priceBaseInUSD: BigDecimal!
+}
+
+type _FastSync @entity {
+  # 0
+  id: String!
+  # Flag if fast sync was activated
+  activated: Boolean!
+  # Block sync started from
+  syncBlock: BigInt!
+  "Pools that need the initialised via template"
+  pools: [String!]!
+  "Flag if pools have mass synced after sync block"
+  poolsInitialized: Boolean!
 }

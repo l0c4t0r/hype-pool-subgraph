@@ -1,19 +1,10 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Pool } from "../../generated/schema";
 import { AlgebraPool as PoolContract } from "../../generated/templates/Pool/AlgebraPool";
-import {
-  hypervisorPositionUpToDate,
-  poolUpToDate,
-  tickUpToDate,
-  updateFeeGrowthGlobal,
-  updateFeeGrowthOutside,
-  updatePositionFees,
-} from "./feeGrowth";
+import {} from "./feeGrowth";
 import { encodeKey } from "./pool";
-import {
-  getOrCreateHypervisor,
-  getOrCreateHypervisorPosition,
-} from "./entities";
+import { getOrCreateToken } from "./entities";
+import { PROTOCOL_ALGEBRA } from "./constants";
 
 export function createAlgebraPool(poolAddress: Address): Pool | null {
   const poolContract = PoolContract.bind(poolAddress);
@@ -25,85 +16,19 @@ export function createAlgebraPool(poolAddress: Address): Pool | null {
 
   const pool = new Pool(poolAddress);
 
+  const token0 = getOrCreateToken(poolContract.token0());
+  const token1 = getOrCreateToken(poolContract.token1());
+
+  pool.token0 = token0.id;
+  pool.token1 = token1.id;
   pool.tickSpacing = BigInt.fromI32(poolContract.tickSpacing());
   pool.currentTick = globalState.value.getTick();
+  pool.sqrtPriceX96 = globalState.value.getPrice();
   pool.feeGrowthGlobal0X128 = poolContract.totalFeeGrowth0Token();
   pool.feeGrowthGlobal1X128 = poolContract.totalFeeGrowth1Token();
+  pool._protocol = PROTOCOL_ALGEBRA;
 
   return pool;
-}
-
-export function updateAlgebraFeeGrowthGlobal(
-  poolAddress: Address,
-  blockNumber: BigInt
-): void {
-  if (poolUpToDate(poolAddress, blockNumber)) {
-    return;
-  }
-  const poolContract = PoolContract.bind(poolAddress);
-  updateFeeGrowthGlobal(
-    poolAddress,
-    poolContract.totalFeeGrowth0Token(),
-    poolContract.totalFeeGrowth1Token(),
-    blockNumber
-  );
-}
-
-export function updateAlgebraFeeGrowthOutside(
-  poolAddress: Address,
-  tickIdx: i32,
-  blockNumber: BigInt
-): void {
-  if (tickUpToDate(poolAddress, tickIdx, blockNumber)) {
-    return;
-  }
-  const poolContract = PoolContract.bind(poolAddress);
-  const tickInfo = poolContract.ticks(tickIdx);
-
-  updateFeeGrowthOutside(
-    poolAddress,
-    tickIdx,
-    tickInfo.getOuterFeeGrowth0Token(),
-    tickInfo.getOuterFeeGrowth1Token(),
-    blockNumber
-  );
-}
-
-export function updateAlgebraPoolPositionFees(
-  hypervisorAddress: Address,
-  positionType: string,
-  blockNumber: BigInt,
-  forceUpdate: boolean = false
-): void {
-  if (
-    hypervisorPositionUpToDate(hypervisorAddress, positionType, blockNumber) &&
-    !forceUpdate
-  ) {
-    return;
-  }
-  const hypervisorPosition = getOrCreateHypervisorPosition(
-    hypervisorAddress,
-    positionType
-  );
-
-  if (!hypervisorPosition.key) {
-    return;
-  }
-
-  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
-  const poolContract = PoolContract.bind(Address.fromBytes(hypervisor.pool));
-  const position = poolContract.positions(hypervisorPosition.key!);
-
-  updatePositionFees(
-    hypervisorAddress,
-    positionType,
-    position.getLiquidity(),
-    position.getFees0(),
-    position.getFees1(),
-    position.getInnerFeeGrowth0Token(),
-    position.getInnerFeeGrowth1Token(),
-    blockNumber
-  );
 }
 
 export function algebraPositionKey(

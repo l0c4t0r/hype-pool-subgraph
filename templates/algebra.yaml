@@ -36,6 +36,12 @@ dataSources:
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraPool
           file: ./abis/AlgebraPool.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
@@ -83,6 +89,8 @@ templates:
         - Pool
         - Tick
       abis:
+        - name: Hypervisor
+          file: ./abis/Hypervisor.json
         - name: Pool
           file: ./abis/AlgebraPool.json
         - name: UniswapV3Pool
