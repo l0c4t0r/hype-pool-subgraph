@@ -12,7 +12,6 @@ import {
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
 
-
 export function processZeroBurn(
   hypervisorAddress: Address,
   block: ethereum.Block
