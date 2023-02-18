@@ -1,8 +1,9 @@
+import { Address } from "@graphprotocol/graph-ts";
 import {
   Rebalance,
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
-import { updateHypervisorRanges } from "../../helpers/feeGrowth";
+import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
 import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../../helpers/constants";
 import {
   updateSnapshotCurrentBlock,
@@ -11,7 +12,9 @@ import {
 import { updateTvl } from "../../helpers/hypervisor";
 import { processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
+import { getOrCreateHypervisor } from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
+
 
 export function handleRebalance(event: Rebalance): void {
   updateSnapshotPreviousBlock(
@@ -37,6 +40,15 @@ export function handleRebalance(event: Rebalance): void {
     true
   );
   updateTvl(event.address, event.block.number);
+
+  // Update ticks as well before snapshot
+  const hypervisor = getOrCreateHypervisor(event.address);
+  updateTicks(
+    Address.fromBytes(hypervisor.pool),
+    event.block.number,
+    PROTOCOL_ALGEBRA,
+    false
+  );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
   initFastSyncPools(event.address, event.block)
 }

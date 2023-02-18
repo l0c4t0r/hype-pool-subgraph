@@ -165,6 +165,24 @@ function updateHypervisorPositionRanges(
   position.save();
 }
 
+export function updateTicks(
+  poolAddress: Address,
+  blockNumber: BigInt,
+  protocol: string,
+  force: boolean = false
+): void {
+  const pool = getOrCreatePool(poolAddress);
+  for (let i = 0; i < pool._ticksActive.length; i++) {
+    updateProtocolFeeGrowthOutside(
+      poolAddress,
+      pool._ticksActive[i],
+      blockNumber,
+      protocol,
+      force
+    );
+  }
+}
+
 export function hypervisorPositionUpToDate(
   hypervisorAddress: Address,
   positionType: string,
