@@ -256,16 +256,31 @@ type TickSnapshot @entity {
 }
 
 type _PoolPricing @entity {
-  # Pool ID
+  "Pool ID"
   id: Bytes!
-  # Whether the base token token0 or token1
+  "Whether the base token token0 or token1"
   baseTokenIndex: Int!
-  # The base token
+  "The base token"
   baseToken: Token!
-  # The path of uniswap V3 pools for calculating USD value
+  "The path of uniswap V3 pools for calculating USD value"
   usdPath: [String!]!
-  # Whether the USD token in usdPool is token0 or token1
+  "Whether the USD token in usdPool is token0 or token1"
   usdPathIndex: [Int!]!
+  "Price of non-base token in terms of the base token"
   priceTokenInBase: BigDecimal!
+  "Price of base token in USD"
   priceBaseInUSD: BigDecimal!
+}
+
+type _FastSync @entity {
+  # 0
+  id: String!
+  # Flag if fast sync was activated
+  activated: Boolean!
+  # Block sync started from
+  syncBlock: BigInt!
+  "Pools that need the initialised via template"
+  pools: [String!]!
+  "Flag if pools have mass synced after sync block"
+  poolsInitialized: Boolean!
 }

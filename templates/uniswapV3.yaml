@@ -1,8 +1,14 @@
 specVersion: 0.0.5
-schema:
-  file: ./schema.graphql
 features:
   - nonFatalErrors
+{{#graft}}
+  - grafting
+graft:
+  base: {{base}}
+  block: {{block}}
+{{/graft}}
+schema:
+  file: ./schema.graphql
 dataSources:
   {{#hypeRegistry}}
   - kind: ethereum

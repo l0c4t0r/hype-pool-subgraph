@@ -12,6 +12,7 @@ import {
   Tick,
   TickSnapshot,
   Token,
+  _FastSync,
   _PoolPricing,
 } from "../../generated/schema";
 import {
@@ -21,6 +22,7 @@ import {
   LIMIT_POSITION,
   LOWER_TICK,
   PREVIOUS_BLOCK,
+  PROTOCOL_UNISWAP_V3,
   UPPER_TICK,
   VERSION,
   ZERO_BD,
@@ -31,6 +33,8 @@ import { createUniswapV3Pool } from "./uniswapV3";
 import { protocolLookup } from "./lookups";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./token";
 import { BaseTokenDefinition } from "./baseTokenDefinition";
+import { FAST_SYNC, FAST_SYNC_BLOCK } from "./config";
+import { triagePoolForFastSync } from "./fastSync";
 
 export function getOrCreateProtocol(): Protocol {
   let protocol = Protocol.load("0");
@@ -41,7 +45,7 @@ export function getOrCreateProtocol(): Protocol {
       network = "arbitrum";
     }
     let name = "uniswap";
-    let underlyingProtocol = "uniswapV3";
+    let underlyingProtocol = PROTOCOL_UNISWAP_V3;
     const protocolInfo = protocolLookup.get(
       network.concat(":").concat(dataSource.address().toHex())
     );
@@ -419,10 +423,23 @@ export function getOrCreatePoolPricing(
         let pool = Pool.load(pathPoolAddress);
         if (!pool) {
           pool = getOrCreatePool(pathPoolAddress);
-          PoolTemplate.create(pathPoolAddress);
+          triagePoolForFastSync(pathPoolAddress);
         }
       }
     }
   }
   return pricing;
+}
+
+export function getOrCreateFastSync(): _FastSync {
+  let fastSync = _FastSync.load("0");
+  if (!fastSync) {
+    fastSync = new _FastSync("0");
+    fastSync.activated = FAST_SYNC;
+    fastSync.syncBlock = FAST_SYNC ? FAST_SYNC_BLOCK : ZERO_BI;
+    fastSync.pools = [];
+    fastSync.poolsInitialized = false;
+    fastSync.save();
+  }
+  return fastSync;
 }

@@ -71,13 +71,17 @@ export function updateHypervisorList(
 
 export function updateLinkedHypervisorTvl(
   poolAddress: Address,
-  block: ethereum.Block
+  block: ethereum.Block,
+  force: boolean = false
 ): void {
   const pool = getOrCreatePool(poolAddress);
   const elapsedSinceLastHypervisorRefresh = block.timestamp.minus(
     pool.lastHypervisorRefreshTime
   );
-  if (elapsedSinceLastHypervisorRefresh > hypervisorUpdateIntervalSeconds) {
+  if (
+    elapsedSinceLastHypervisorRefresh > hypervisorUpdateIntervalSeconds ||
+    force
+  ) {
     log.info(
       "{} seconds since last hypervisor refresh for pool {}.  Refreshing now",
       [elapsedSinceLastHypervisorRefresh.toString(), pool.id.toHex()]

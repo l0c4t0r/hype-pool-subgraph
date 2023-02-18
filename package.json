@@ -10,7 +10,6 @@
     "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebra.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
     "deploy:uniswap:celo": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-celo",
     "deploy:uniswap:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-mainnet",

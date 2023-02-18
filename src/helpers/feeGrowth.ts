@@ -1,19 +1,16 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import { Tick } from "../../generated/schema";
-import { algebraPositionKey, updateAlgebraFeeGrowthOutside } from "./algebra";
-import { BASE_POSITION, LIMIT_POSITION } from "./constants";
+import { algebraPositionKey } from "./algebra";
+import { updateProtocolFeeGrowthOutside } from "./common";
+import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "./constants";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,
   getOrCreatePool,
-  getOrCreateProtocol,
   getOrCreateTick,
 } from "./entities";
-import {
-  uniswapV3PositionKey,
-  updateUniswapV3FeeGrowthOutside,
-} from "./uniswapV3";
+import { uniswapV3PositionKey } from "./uniswapV3";
 
 export function updatePositionFees(
   hypervisorAddress: Address,
@@ -49,9 +46,9 @@ export function updateFeeGrowthOutside(
 
   // Only store prev values the first time to prevent overwritten by forced update
   if (blockNumber > tick.lastUpdatedBlock) {
-    tick._previousTickIdx = tick.tickIdx
-    tick._previousFeeGrowthOutside0X128 = tick.feeGrowthOutside0X128
-    tick._previousFeeGrowthOutside1X128 = tick.feeGrowthOutside1X128
+    tick._previousTickIdx = tick.tickIdx;
+    tick._previousFeeGrowthOutside0X128 = tick.feeGrowthOutside0X128;
+    tick._previousFeeGrowthOutside1X128 = tick.feeGrowthOutside1X128;
   }
   tick.feeGrowthOutside0X128 = feeGrowthOutside0X128;
   tick.feeGrowthOutside1X128 = feeGrowthOutside1X128;
@@ -69,9 +66,9 @@ export function updateFeeGrowthGlobal(
 
   // Only store prev values the first time to prevent overwritten by forced update
   if (blockNumber > pool.lastUpdatedBlock) {
-    pool._previousTick = pool.currentTick
-    pool._previousFeeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128
-    pool._previousFeeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128
+    pool._previousTick = pool.currentTick;
+    pool._previousFeeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128;
+    pool._previousFeeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128;
   }
   pool.feeGrowthGlobal0X128 = feeGrowthGlobal0X128;
   pool.feeGrowthGlobal1X128 = feeGrowthGlobal1X128;
@@ -81,10 +78,36 @@ export function updateFeeGrowthGlobal(
 
 export function updateHypervisorRanges(
   hypervisorAddress: Address,
-  positionType: string,
-  blockNumber: BigInt
+  blockNumber: BigInt,
+  protocol: string,
+  force: boolean = false
 ): void {
-  const protocol = getOrCreateProtocol();
+  updateHypervisorPositionRanges(
+    hypervisorAddress,
+    BASE_POSITION,
+    blockNumber,
+    protocol,
+    force
+  );
+  updateHypervisorPositionRanges(
+    hypervisorAddress,
+    LIMIT_POSITION,
+    blockNumber,
+    protocol,
+    force
+  );
+
+  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
+  updateActiveTicks(Address.fromBytes(hypervisor.pool));
+}
+
+function updateHypervisorPositionRanges(
+  hypervisorAddress: Address,
+  positionType: string,
+  blockNumber: BigInt,
+  protocol: string,
+  force: boolean = false
+): void {
   const hypervisor = getOrCreateHypervisor(hypervisorAddress);
   const poolAddress = Address.fromBytes(hypervisor.pool);
 
@@ -94,9 +117,6 @@ export function updateHypervisorRanges(
     hypervisorAddress,
     positionType
   );
-
-  const oldTickLower = Tick.load(position.tickLower);
-  const oldTickUpper = Tick.load(position.tickUpper);
 
   let newTickLower = 0;
   let newTickUpper = 0;
@@ -108,7 +128,7 @@ export function updateHypervisorRanges(
     newTickUpper = hypervisorContract.limitUpper();
   }
 
-  if (protocol.underlyingProtocol == "algebra") {
+  if (protocol == PROTOCOL_ALGEBRA) {
     position.key = algebraPositionKey(
       hypervisorAddress,
       newTickLower,
@@ -125,25 +145,24 @@ export function updateHypervisorRanges(
   const tickLower = getOrCreateTick(poolAddress, newTickLower);
   const tickUpper = getOrCreateTick(poolAddress, newTickUpper);
 
-  // Initialize feeGrowth fields
-  if (protocol.underlyingProtocol == "algebra") {
-    updateAlgebraFeeGrowthOutside(poolAddress, newTickLower, blockNumber);
-    updateAlgebraFeeGrowthOutside(poolAddress, newTickUpper, blockNumber);
-  } else {
-    updateUniswapV3FeeGrowthOutside(poolAddress, newTickLower, blockNumber);
-    updateUniswapV3FeeGrowthOutside(poolAddress, newTickUpper, blockNumber);
-  }
+  updateProtocolFeeGrowthOutside(
+    poolAddress,
+    newTickLower,
+    blockNumber,
+    protocol,
+    force
+  );
+  updateProtocolFeeGrowthOutside(
+    poolAddress,
+    newTickUpper,
+    blockNumber,
+    protocol,
+    force
+  );
 
   position.tickLower = tickLower.id;
   position.tickUpper = tickUpper.id;
   position.save();
-
-  // Update activeTicks in pool
-  updateActiveTicks(
-    poolAddress,
-    [oldTickLower!.tickIdx, oldTickUpper!.tickIdx],
-    [newTickLower, newTickUpper]
-  );
 }
 
 export function hypervisorPositionUpToDate(
@@ -177,25 +196,31 @@ export function getActiveTicks(poolAddress: Address): i32[] {
   return pool._ticksActive;
 }
 
-function updateActiveTicks(
-  poolAddress: Address,
-  ticksOld: i32[],
-  ticksNew: i32[]
-): void {
+function getPositionTickIdx(
+  hypervisorAddress: Address,
+  positionType: string
+): i32[] {
+  const position = getOrCreateHypervisorPosition(
+    hypervisorAddress,
+    positionType
+  );
+  const tickLower = Tick.load(position.tickLower)!;
+  const tickUpper = Tick.load(position.tickUpper)!;
+
+  return [tickLower.tickIdx, tickUpper.tickIdx];
+}
+
+function updateActiveTicks(poolAddress: Address): void {
   const pool = getOrCreatePool(poolAddress);
   let activeTicks = new Set<i32>();
-
-  for (let i = 0; i < pool._ticksActive.length; i++) {
-    activeTicks.add(pool._ticksActive[i]);
-  }
-
-  // Delete old before adding new in case rebalance ranges are the same
-  for (let i = 0; i < ticksOld.length; i++) {
-    activeTicks.delete(ticksOld[i]);
-  }
-
-  for (let i = 0; i < ticksNew.length; i++) {
-    activeTicks.add(ticksNew[i]);
+  for (let i = 0; i < pool._hypervisors.length; i++) {
+    const hypervisorAddress = Address.fromString(pool._hypervisors[i]);
+    const baseTicks = getPositionTickIdx(hypervisorAddress, BASE_POSITION);
+    const limitTicks = getPositionTickIdx(hypervisorAddress, LIMIT_POSITION);
+    activeTicks.add(baseTicks[0]);
+    activeTicks.add(baseTicks[1]);
+    activeTicks.add(limitTicks[0]);
+    activeTicks.add(limitTicks[1]);
   }
 
   pool._ticksActive = activeTicks.values();
