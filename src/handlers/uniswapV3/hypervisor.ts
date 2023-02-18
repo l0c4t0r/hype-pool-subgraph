@@ -1,10 +1,11 @@
+import { Address } from "@graphprotocol/graph-ts";
 import {
   Deposit,
   Rebalance,
   Withdraw,
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
-import { updateHypervisorRanges } from "../../helpers/feeGrowth";
+import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
 import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_UNISWAP_V3 } from "../../helpers/constants";
 import {
   updateSnapshotCurrentBlock,
@@ -13,7 +14,9 @@ import {
 import { updateTvl } from "../../helpers/hypervisor";
 import { processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
+import { getOrCreateHypervisor } from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
+
 
 export function handleDeposit(event: Deposit): void {
   updateSnapshotPreviousBlock(
@@ -36,6 +39,15 @@ export function handleDeposit(event: Deposit): void {
     false
   );
   updateTvl(event.address, event.block.number);
+
+  // Update ticks as well before snapshot
+  const hypervisor = getOrCreateHypervisor(event.address);
+  updateTicks(
+    Address.fromBytes(hypervisor.pool),
+    event.block.number,
+    PROTOCOL_UNISWAP_V3,
+    false
+  );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
   initFastSyncPools(event.address, event.block)
 }
@@ -60,6 +72,15 @@ export function handleWithdraw(event: Withdraw): void {
     false
   );
   updateTvl(event.address, event.block.number);
+
+  // Update ticks as well before snapshot
+  const hypervisor = getOrCreateHypervisor(event.address);
+  updateTicks(
+    Address.fromBytes(hypervisor.pool),
+    event.block.number,
+    PROTOCOL_UNISWAP_V3,
+    false
+  );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
   initFastSyncPools(event.address, event.block)
 }
@@ -88,6 +109,15 @@ export function handleRebalance(event: Rebalance): void {
     false
   );
   updateTvl(event.address, event.block.number);
+
+  // Update ticks as well before snapshot
+  const hypervisor = getOrCreateHypervisor(event.address);
+  updateTicks(
+    Address.fromBytes(hypervisor.pool),
+    event.block.number,
+    PROTOCOL_UNISWAP_V3,
+    false
+  );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
   initFastSyncPools(event.address, event.block)
 }

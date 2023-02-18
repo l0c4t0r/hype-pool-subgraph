@@ -1,12 +1,17 @@
 import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
 import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
-import { getOrCreateProtocol } from "../../helpers/entities";
+import {
+  getOrCreateHypervisor,
+  getOrCreateProtocol,
+} from "../../helpers/entities";
+import { updateTicks } from "../../helpers/feeGrowth";
 import { updateTvl } from "../../helpers/hypervisor";
 import {
   updateSnapshotCurrentBlock,
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
+
 
 export function processZeroBurn(
   hypervisorAddress: Address,
@@ -31,5 +36,14 @@ export function processZeroBurn(
   );
 
   updateTvl(hypervisorAddress, block.number);
+
+  // Update ticks as well before snapshot
+  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
+  updateTicks(
+    Address.fromBytes(hypervisor.pool),
+    block.number,
+    protocol.underlyingProtocol,
+    false
+  );
   updateSnapshotCurrentBlock(hypervisorAddress, block.number, false);
 }
