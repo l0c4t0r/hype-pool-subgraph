@@ -23,8 +23,8 @@ export function handleRebalance(event: Rebalance): void {
     event.block.timestamp
   );
   // Set ranges
-  // Force updates on everything as rebalances changes ranges
   updateHypervisorRanges(event.address, event.block.number, PROTOCOL_ALGEBRA);
+  // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
@@ -55,5 +55,4 @@ export function handleRebalance(event: Rebalance): void {
 
 export function handleZeroBurn(event: ZeroBurn): void {
   processZeroBurn(event.address, event.block);
-  initFastSyncPools(event.address, event.block)
 }

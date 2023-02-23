@@ -46,6 +46,8 @@ type Hypervisor @entity {
   symbol: String!
   "Address of underlying pool"
   pool: Pool!
+  "Total supply of vault tokens"
+  totalSupply: BigInt!
   "TVL of token 0"
   tvl0: BigInt!
   "TVL of token 1"
@@ -60,6 +62,8 @@ type Hypervisor @entity {
   feeSnapshots: [FeeSnapshot!]! @derivedFrom(field: "hypervisor")
   "Last updated block for TVL fields"
   lastUpdatedBlock: BigInt!
+  "Previous total supply of vault tokens before update"
+  _previousTotalSupply: BigInt!
   "Previous TVL of token 0 before update"
   _previousTvl0: BigInt!
   "Previous TVL of token 1 before update"
@@ -199,6 +203,8 @@ type FeeCollectionSnapshot @entity {
   price0: BigDecimal!
   "Token1 price"
   price1: BigDecimal!
+  "Total supply of vault tokens"
+  totalSupply: BigInt!
   "Token0 portion of TVL"
   tvl0: BigInt!
   "Token1 portion of TVL"

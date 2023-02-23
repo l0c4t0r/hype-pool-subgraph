@@ -20,10 +20,12 @@ export function updateTvl(
   const hypervisorContract = HypervisorContract.bind(hypervisorAddress);
   const totalAmounts = hypervisorContract.getTotalAmounts();
 
+  hypervisor._previousTotalSupply = hypervisor.totalSupply;
   hypervisor._previousTvl0 = hypervisor.tvl0;
   hypervisor._previousTvl1 = hypervisor.tvl1;
   hypervisor._previousTvlUSD = hypervisor.tvlUSD;
 
+  hypervisor.totalSupply = hypervisorContract.totalSupply();
   hypervisor.tvl0 = totalAmounts.getTotal0();
   hypervisor.tvl1 = totalAmounts.getTotal1();
 

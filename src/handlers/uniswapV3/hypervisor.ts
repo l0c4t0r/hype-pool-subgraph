@@ -92,21 +92,20 @@ export function handleRebalance(event: Rebalance): void {
   );
   // Set ranges
   updateHypervisorRanges(event.address, event.block.number, PROTOCOL_UNISWAP_V3);
-  // Update positions
   // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
     PROTOCOL_UNISWAP_V3,
-    false
+    true
   );
   updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
     PROTOCOL_UNISWAP_V3,
-    false
+    true
   );
   updateTvl(event.address, event.block.number);
 

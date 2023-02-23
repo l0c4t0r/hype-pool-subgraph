@@ -8,11 +8,8 @@ import {
 } from "@graphprotocol/graph-ts";
 import { Pool } from "../../generated/schema";
 import { UniswapV3Pool as PoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
-import { hypervisorPositionUpToDate, updatePositionFees } from "./feeGrowth";
 import { encodeKey } from "./pool";
 import {
-  getOrCreateHypervisor,
-  getOrCreateHypervisorPosition,
   getOrCreateToken,
 } from "./entities";
 import { PROTOCOL_UNISWAP_V3 } from "./constants";

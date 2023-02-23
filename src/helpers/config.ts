@@ -3,8 +3,8 @@ import { ZERO_BI } from "./constants"
 
 export const FAST_SYNC = false
 export const FAST_SYNC_BLOCK = ZERO_BI
-// export const FAST_SYNC_BLOCK = BigInt.fromString("60524362")  // Uniswap Arbitrum
-// export const FAST_SYNC_BLOCK = BigInt.fromString("16619206")  // Uniswap Mainnet
-// export const FAST_SYNC_BLOCK = BigInt.fromString("74224200")  // Uniswap Optimism
-// export const FAST_SYNC_BLOCK = BigInt.fromString("39241981")  // Uniswap Polygon
-// export const FAST_SYNC_BLOCK = BigInt.fromString("39241981")  // Quickswap Polygon
+// export const FAST_SYNC_BLOCK = BigInt.fromString("62673046")  // Uniswap Arbitrum
+// export const FAST_SYNC_BLOCK = BigInt.fromString("16668033")  // Uniswap Mainnet
+// export const FAST_SYNC_BLOCK = BigInt.fromString("75503559")  // Uniswap Optimism
+// export const FAST_SYNC_BLOCK = BigInt.fromString("39499913")  // Uniswap Polygon
+// export const FAST_SYNC_BLOCK = BigInt.fromString("39499913")  // Quickswap Polygon

@@ -72,10 +72,12 @@ export function updateFeeCollectionSnapshot(
   );
 
   if (snapshotType == PREVIOUS_BLOCK && block <= hypervisor.lastUpdatedBlock) {
+    feeCollectionSnapshot.totalSupply = hypervisor._previousTotalSupply;
     feeCollectionSnapshot.tvl0 = hypervisor._previousTvl0;
     feeCollectionSnapshot.tvl1 = hypervisor._previousTvl1;
     feeCollectionSnapshot.tvlUSD = hypervisor._previousTvlUSD;
   } else {
+    feeCollectionSnapshot.totalSupply = hypervisor.totalSupply;
     feeCollectionSnapshot.tvl0 = hypervisor.tvl0;
     feeCollectionSnapshot.tvl1 = hypervisor.tvl1;
     feeCollectionSnapshot.tvlUSD = hypervisor.tvlUSD;

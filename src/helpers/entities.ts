@@ -82,6 +82,7 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
     const pool = getOrCreatePool(poolAddress);
     hypervisor.pool = pool.id;
 
+    hypervisor.totalSupply = ZERO_BI;
     hypervisor.tvl0 = ZERO_BI;
     hypervisor.tvl1 = ZERO_BI;
     hypervisor.tvlUSD = ZERO_BD;
@@ -98,6 +99,7 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
     hypervisor.basePosition = basePosition.id;
     hypervisor.limitPosition = limitPosition.id;
     hypervisor.lastUpdatedBlock = ZERO_BI;
+    hypervisor._previousTotalSupply = ZERO_BI;
     hypervisor._previousTvl0 = ZERO_BI;
     hypervisor._previousTvl1 = ZERO_BI;
     hypervisor._previousTvlUSD = ZERO_BD;
@@ -263,6 +265,7 @@ export function getOrCreateFeeCollectionSnapshot(
     feeCollectionSnapshot.tick = 0;
     feeCollectionSnapshot.price0 = ZERO_BD;
     feeCollectionSnapshot.price1 = ZERO_BD;
+    feeCollectionSnapshot.totalSupply = ZERO_BI;
     feeCollectionSnapshot.tvl0 = ZERO_BI;
     feeCollectionSnapshot.tvl1 = ZERO_BI;
     feeCollectionSnapshot.tvlUSD = ZERO_BD;
