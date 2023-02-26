@@ -15,3 +15,7 @@ protocolLookup.set("arbitrum-one:0x66cd859053c458688044d816117d5bdf42a56813", {
   name: "uniswap",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
+protocolLookup.set("arbitrum-one:0x37595fcaf29e4fbac0f7c1863e3df2fe6e2247e9", {
+  name: "zyberswap",
+  underlyingProtocol: PROTOCOL_ALGEBRA,
+});

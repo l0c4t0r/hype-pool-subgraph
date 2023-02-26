@@ -1,6 +1,5 @@
 import { Address, BigInt, Bytes, dataSource } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
-import { Pool as PoolTemplate } from "../../generated/templates";
 import {
   FeeCollectionSnapshot,
   FeeSnapshot,
