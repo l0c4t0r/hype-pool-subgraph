@@ -9,6 +9,7 @@ enum Network {
   celo
   matic
   optimism
+  bsc
 }
 
 enum HypervisorPositionType {

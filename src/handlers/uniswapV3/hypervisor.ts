@@ -6,7 +6,7 @@ import {
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
 import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_UNISWAP_V3 } from "../../helpers/constants";
+import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_UNISWAP_V3 } from "../../config/constants";
 import {
   updateSnapshotCurrentBlock,
   updateSnapshotPreviousBlock,

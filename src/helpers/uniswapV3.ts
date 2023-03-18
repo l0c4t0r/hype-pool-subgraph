@@ -12,7 +12,7 @@ import { encodeKey } from "./pool";
 import {
   getOrCreateToken,
 } from "./entities";
-import { PROTOCOL_UNISWAP_V3 } from "./constants";
+import { PROTOCOL_UNISWAP_V3 } from "../config/constants";
 
 export function createUniswapV3Pool(poolAddress: Address): Pool | null {
   const poolContract = PoolContract.bind(poolAddress);

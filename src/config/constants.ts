@@ -1,9 +1,9 @@
 import { BigDecimal, BigInt, TypedMap } from "@graphprotocol/graph-ts";
 
-export const VERSION = "1.0.3";
+export const VERSION = "1.0.4";
 
-export const PROTOCOL_ALGEBRA = "algebra"
-export const PROTOCOL_UNISWAP_V3 = "uniswapV3"
+export const PROTOCOL_ALGEBRA = "algebra";
+export const PROTOCOL_UNISWAP_V3 = "uniswapV3";
 
 export const BASE_POSITION = "base";
 export const LIMIT_POSITION = "limit";
@@ -56,6 +56,13 @@ export class constantAddresses {
     return lookup as TypedMap<string, string>;
   }
 
+  static bsc(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d");
+
+    return lookup as TypedMap<string, string>;
+  }
+
   static network(network: string): TypedMap<string, string> {
     let mapping = new TypedMap<string, string>();
     if (network == "mainnet") {
@@ -68,6 +75,8 @@ export class constantAddresses {
       mapping = this.optimism();
     } else if (network == "celo") {
       mapping = this.celo();
+    } else if (network == "bsc") {
+      mapping = this.bsc();
     }
 
     return mapping as TypedMap<string, string>;

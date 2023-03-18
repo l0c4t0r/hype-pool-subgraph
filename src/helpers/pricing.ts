@@ -1,10 +1,8 @@
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Token, _PoolPricing } from "../../generated/schema";
-import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "./constants";
+import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../config/constants";
 import { getOrCreatePool } from "./entities";
 import { isUSDC } from "./token";
-
-const USDC_DECIMAL_FACTOR = 10 ** 6;
 
 export function getExchangeRate(
   poolAddress: Address,

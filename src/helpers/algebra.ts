@@ -4,7 +4,7 @@ import { AlgebraPool as PoolContract } from "../../generated/templates/Pool/Alge
 import {} from "./feeGrowth";
 import { encodeKey } from "./pool";
 import { getOrCreateToken } from "./entities";
-import { PROTOCOL_ALGEBRA } from "./constants";
+import { PROTOCOL_ALGEBRA } from "../config/constants";
 
 export function createAlgebraPool(poolAddress: Address): Pool | null {
   const poolContract = PoolContract.bind(poolAddress);

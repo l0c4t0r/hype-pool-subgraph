@@ -3,7 +3,7 @@ import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/H
 import { Tick } from "../../generated/schema";
 import { algebraPositionKey } from "./algebra";
 import { updateProtocolFeeGrowthOutside } from "./common";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "./constants";
+import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../config/constants";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,

@@ -1,7 +1,7 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { AlgebraPool as AlgebraPoolContract } from "../../generated/templates/Pool/AlgebraPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "./constants";
+import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../config/constants";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,

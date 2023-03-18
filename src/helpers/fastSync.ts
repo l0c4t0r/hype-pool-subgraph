@@ -1,7 +1,7 @@
 import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { Pool as PoolTemplate } from "../../generated/templates";
 import { fullRefresh } from "./common";
-import { FAST_SYNC } from "./config";
+import { FAST_SYNC } from "../config/fastSync";
 import { getOrCreateFastSync, getOrCreatePool } from "./entities";
 
 export function triagePoolForFastSync(poolAddress: Address): void {

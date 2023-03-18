@@ -7,7 +7,7 @@ import {
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
-import { PROTOCOL_ALGEBRA } from "../../helpers/constants";
+import { PROTOCOL_ALGEBRA } from "../../config/constants";
 
 export function handleMint(event: Mint): void {
   processMint(

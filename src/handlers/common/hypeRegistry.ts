@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { Hypervisor, _FastSync } from "../../../generated/schema";
 import { Hypervisor as HypervisorContract } from "../../../generated/templates/Hypervisor/Hypervisor";
 import { Hypervisor as HypervisorTemplate } from "../../../generated/templates";
@@ -7,16 +7,17 @@ import { UniswapV3Pool as UniswapPoolContract } from "../../../generated/templat
 import {
   getOrCreateFastSync,
   getOrCreateHypervisor,
+  getOrCreatePool,
   getOrCreateProtocol,
 } from "../../helpers/entities";
 import { updateHypervisorRanges } from "../../helpers/feeGrowth";
-import { updateHypervisorList } from "../../helpers/pool";
-import { PROTOCOL_ALGEBRA } from "../../helpers/constants";
+import { updateHypervisorList, updatePoolPricing } from "../../helpers/pool";
+import { PROTOCOL_ALGEBRA } from "../../config/constants";
 import { triagePoolForFastSync } from "../../helpers/fastSync";
 
 export function processHypeAdded(
   hypervisorAddress: Address,
-  blockNumber: BigInt
+  block: ethereum.Block,
 ): void {
   let hypervisor = Hypervisor.load(hypervisorAddress);
 
@@ -58,13 +59,17 @@ export function processHypeAdded(
     }
 
     hypervisor = getOrCreateHypervisor(hypervisorAddress);
+    // Initialize pricing related to underlying pool
+    const poolAddress = Address.fromBytes(hypervisor.pool)
+    const pool = getOrCreatePool(poolAddress)
+    updatePoolPricing(poolAddress, pool.currentTick, pool.sqrtPriceX96, block);
 
-    updateHypervisorList(Address.fromBytes(hypervisor.pool), hypervisorAddress);
+    updateHypervisorList(poolAddress, hypervisorAddress);
 
     // Initialize ranges as hype may be added to registry after a rebalance
     updateHypervisorRanges(
       hypervisorAddress,
-      blockNumber,
+      block.number,
       protocol.underlyingProtocol
     );
 
@@ -73,6 +78,6 @@ export function processHypeAdded(
     getOrCreateFastSync();
 
     // Creates pool template if ready
-    triagePoolForFastSync(Address.fromBytes(hypervisor.pool));
+    triagePoolForFastSync(poolAddress);
   }
 }

@@ -1,6 +1,6 @@
 import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
-import { BASE_POSITION, LIMIT_POSITION } from "../../helpers/constants";
+import { BASE_POSITION, LIMIT_POSITION } from "../../config/constants";
 import {
   getOrCreateHypervisor,
   getOrCreateProtocol,

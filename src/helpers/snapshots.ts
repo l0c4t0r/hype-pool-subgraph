@@ -7,7 +7,7 @@ import {
   LOWER_TICK,
   PREVIOUS_BLOCK,
   UPPER_TICK,
-} from "./constants";
+} from "../config/constants";
 import {
   createFeeSnapshot,
   getOrCreateFeeCollectionSnapshot,

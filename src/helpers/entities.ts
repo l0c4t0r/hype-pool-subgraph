@@ -26,13 +26,13 @@ import {
   VERSION,
   ZERO_BD,
   ZERO_BI,
-} from "./constants";
+} from "../config/constants";
 import { createAlgebraPool } from "./algebra";
 import { createUniswapV3Pool } from "./uniswapV3";
-import { protocolLookup } from "./lookups";
+import { protocolLookup } from "../config/lookups";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./token";
-import { BaseTokenDefinition } from "./baseTokenDefinition";
-import { FAST_SYNC, FAST_SYNC_BLOCK } from "./config";
+import { BaseTokenDefinition } from "../config/baseTokenDefinition";
+import { FAST_SYNC, FAST_SYNC_BLOCK } from "../config/fastSync";
 import { triagePoolForFastSync } from "./fastSync";
 
 export function getOrCreateProtocol(): Protocol {
@@ -40,9 +40,7 @@ export function getOrCreateProtocol(): Protocol {
   if (!protocol) {
     protocol = new Protocol("0");
     let network = dataSource.network();
-    if (network == "arbitrum-one") {
-      network = "arbitrum";
-    }
+
     let name = "uniswap";
     let underlyingProtocol = PROTOCOL_UNISWAP_V3;
     const protocolInfo = protocolLookup.get(
@@ -53,17 +51,22 @@ export function getOrCreateProtocol(): Protocol {
       underlyingProtocol = protocolInfo.underlyingProtocol;
     }
 
+    let networkName = network
+    if (network == "arbitrum-one") {
+      networkName = "arbitrum";
+    }
+
     protocol.name = "hypePool"
       .concat("-")
       .concat(name)
       .concat("-")
       .concat(underlyingProtocol)
       .concat("-")
-      .concat(network)
+      .concat(networkName)
       .concat("-")
       .concat(VERSION);
     protocol.underlyingProtocol = underlyingProtocol;
-    protocol.network = network;
+    protocol.network = networkName;
     protocol.version = VERSION;
     protocol.save();
   }

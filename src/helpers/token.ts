@@ -4,8 +4,8 @@ import {
   dataSource,
   ethereum,
 } from "@graphprotocol/graph-ts";
-import { constantAddresses, DEFAULT_DECIMAL } from "./constants";
-import { StaticTokenDefinition } from "./staticTokenDefinition";
+import { constantAddresses, DEFAULT_DECIMAL } from "../config/constants";
+import { StaticTokenDefinition } from "../config/staticTokenDefinition";
 import { ERC20 } from "../../generated/HypeRegistry/ERC20";
 import { ERC20SymbolBytes } from "../../generated/HypeRegistry/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../../generated/HypeRegistry/ERC20NameBytes";
