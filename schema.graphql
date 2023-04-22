@@ -10,6 +10,7 @@ enum Network {
   matic
   optimism
   bsc
+  pzke
 }
 
 enum HypervisorPositionType {
