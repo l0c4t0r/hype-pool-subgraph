@@ -39,7 +39,7 @@ export function getOrCreateProtocol(): Protocol {
   let protocol = Protocol.load("0");
   if (!protocol) {
     protocol = new Protocol("0");
-    let network = dataSource.network();
+    const network = dataSource.network();
 
     let name = "uniswap";
     let underlyingProtocol = PROTOCOL_UNISWAP_V3;
@@ -51,9 +51,11 @@ export function getOrCreateProtocol(): Protocol {
       underlyingProtocol = protocolInfo.underlyingProtocol;
     }
 
-    let networkName = network
+    let networkName = network;
     if (network == "arbitrum-one") {
       networkName = "arbitrum";
+    } else if (network == "polygon-zkevm") {
+      networkName = "pzke";
     }
 
     protocol.name = "hypePool"
@@ -83,6 +85,13 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
     const poolAddress = hypervisorContract.pool();
     const pool = getOrCreatePool(poolAddress);
     hypervisor.pool = pool.id;
+
+    const feeCall = hypervisorContract.try_fee();
+    if (feeCall.reverted) {
+      hypervisor.fee = 10;
+    } else {
+      hypervisor.fee = feeCall.value;
+    }
 
     hypervisor.totalSupply = ZERO_BI;
     hypervisor.tvl0 = ZERO_BI;
@@ -264,6 +273,7 @@ export function getOrCreateFeeCollectionSnapshot(
     feeCollectionSnapshot = new FeeCollectionSnapshot(id);
     feeCollectionSnapshot.type = snapshotType;
     feeCollectionSnapshot.feeSnapshot = feeSnapshotId;
+    feeCollectionSnapshot.fee = 0;
     feeCollectionSnapshot.tick = 0;
     feeCollectionSnapshot.price0 = ZERO_BD;
     feeCollectionSnapshot.price1 = ZERO_BD;

@@ -47,6 +47,8 @@ type Hypervisor @entity {
   symbol: String!
   "Address of underlying pool"
   pool: Pool!
+  "Protocol Fee"
+  fee: Int!
   "Total supply of vault tokens"
   totalSupply: BigInt!
   "TVL of token 0"
@@ -198,6 +200,8 @@ type FeeCollectionSnapshot @entity {
   type: FeeCollectionSnapshotType!
   "Parent feeSnapshot entity ID"
   feeSnapshot: FeeSnapshot!
+  "Protocol Fee"
+  fee: Int!
   "Pool tick"
   tick: Int!
   "Token 0 price"

@@ -3,18 +3,22 @@ import {
   Rebalance,
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
+import { SetFee } from "../../../generated/templates/Hypervisor/Hypervisor";
 import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../../config/constants";
+import {
+  BASE_POSITION,
+  LIMIT_POSITION,
+  PROTOCOL_ALGEBRA,
+} from "../../config/constants";
 import {
   updateSnapshotCurrentBlock,
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
 import { updateTvl } from "../../helpers/hypervisor";
-import { processZeroBurn } from "../common/hypervisor";
+import { processSetFee, processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
 import { getOrCreateHypervisor } from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
-
 
 export function handleRebalance(event: Rebalance): void {
   updateSnapshotPreviousBlock(
@@ -50,9 +54,13 @@ export function handleRebalance(event: Rebalance): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
-  initFastSyncPools(event.address, event.block)
+  initFastSyncPools(event.address, event.block);
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {
   processZeroBurn(event.address, event.block);
 }
+
+export function handleSetFee(event: SetFee): void {
+  processSetFee(event.address, event.params.newFee)
+};

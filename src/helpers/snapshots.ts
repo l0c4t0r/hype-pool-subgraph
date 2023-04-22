@@ -71,6 +71,8 @@ export function updateFeeCollectionSnapshot(
     snapshotType
   );
 
+  feeCollectionSnapshot.fee = hypervisor.fee
+
   if (snapshotType == PREVIOUS_BLOCK && block <= hypervisor.lastUpdatedBlock) {
     feeCollectionSnapshot.totalSupply = hypervisor._previousTotalSupply;
     feeCollectionSnapshot.tvl0 = hypervisor._previousTvl0;

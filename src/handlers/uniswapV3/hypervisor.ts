@@ -5,18 +5,22 @@ import {
   Withdraw,
   ZeroBurn,
 } from "../../../generated/HypeRegistry/Hypervisor";
+import { SetFee } from "../../../generated/templates/Hypervisor/Hypervisor";
 import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_UNISWAP_V3 } from "../../config/constants";
+import {
+  BASE_POSITION,
+  LIMIT_POSITION,
+  PROTOCOL_UNISWAP_V3,
+} from "../../config/constants";
 import {
   updateSnapshotCurrentBlock,
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
 import { updateTvl } from "../../helpers/hypervisor";
-import { processZeroBurn } from "../common/hypervisor";
+import { processSetFee, processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
 import { getOrCreateHypervisor } from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
-
 
 export function handleDeposit(event: Deposit): void {
   updateSnapshotPreviousBlock(
@@ -49,7 +53,7 @@ export function handleDeposit(event: Deposit): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
-  initFastSyncPools(event.address, event.block)
+  initFastSyncPools(event.address, event.block);
 }
 export function handleWithdraw(event: Withdraw): void {
   updateSnapshotPreviousBlock(
@@ -82,7 +86,7 @@ export function handleWithdraw(event: Withdraw): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
-  initFastSyncPools(event.address, event.block)
+  initFastSyncPools(event.address, event.block);
 }
 export function handleRebalance(event: Rebalance): void {
   updateSnapshotPreviousBlock(
@@ -91,7 +95,11 @@ export function handleRebalance(event: Rebalance): void {
     event.block.timestamp
   );
   // Set ranges
-  updateHypervisorRanges(event.address, event.block.number, PROTOCOL_UNISWAP_V3);
+  updateHypervisorRanges(
+    event.address,
+    event.block.number,
+    PROTOCOL_UNISWAP_V3
+  );
   // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
@@ -118,9 +126,13 @@ export function handleRebalance(event: Rebalance): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
-  initFastSyncPools(event.address, event.block)
+  initFastSyncPools(event.address, event.block);
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {
   processZeroBurn(event.address, event.block);
+}
+
+export function handleSetFee(event: SetFee): void {
+  processSetFee(event.address, event.params.newFee);
 }

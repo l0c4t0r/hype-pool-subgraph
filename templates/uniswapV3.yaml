@@ -79,6 +79,8 @@ templates:
           handler: handleRebalance
         - event: ZeroBurn(uint8,uint256,uint256)
           handler: handleZeroBurn
+        - event: SetFee(uint8)
+          handler: handleSetFee
   - name: Pool
     kind: ethereum/contract
     network: {{network}}

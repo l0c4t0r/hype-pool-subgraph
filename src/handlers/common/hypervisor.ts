@@ -46,3 +46,9 @@ export function processZeroBurn(
   );
   updateSnapshotCurrentBlock(hypervisorAddress, block.number, false);
 }
+
+export function processSetFee(hypervisorAddress: Address, newFee: i32): void {
+  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
+  hypervisor.fee = newFee;
+  hypervisor.save();
+}

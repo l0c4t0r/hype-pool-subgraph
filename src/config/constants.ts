@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, TypedMap } from "@graphprotocol/graph-ts";
 
-export const VERSION = "1.0.4";
+export const VERSION = "1.1.0";
 
 export const PROTOCOL_ALGEBRA = "algebra";
 export const PROTOCOL_UNISWAP_V3 = "uniswapV3";
@@ -63,6 +63,13 @@ export class constantAddresses {
     return lookup as TypedMap<string, string>;
   }
 
+  static polygonZkEvm(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035");
+
+    return lookup as TypedMap<string, string>;
+  }
+
   static network(network: string): TypedMap<string, string> {
     let mapping = new TypedMap<string, string>();
     if (network == "mainnet") {
@@ -77,6 +84,8 @@ export class constantAddresses {
       mapping = this.celo();
     } else if (network == "bsc") {
       mapping = this.bsc();
+    } else if (network == "polygon-zkevm") {
+      mapping = this.polygonZkEvm();
     }
 
     return mapping as TypedMap<string, string>;

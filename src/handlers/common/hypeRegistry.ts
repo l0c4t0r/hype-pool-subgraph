@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, ethereum, log } from "@graphprotocol/graph-ts";
 import { Hypervisor, _FastSync } from "../../../generated/schema";
 import { Hypervisor as HypervisorContract } from "../../../generated/templates/Hypervisor/Hypervisor";
 import { Hypervisor as HypervisorTemplate } from "../../../generated/templates";

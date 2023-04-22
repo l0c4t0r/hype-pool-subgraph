@@ -11,6 +11,10 @@ protocolLookup.set("matic:0xaec731f69fa39ad84c7749e913e3bc227427adfd", {
   name: "quickswap",
   underlyingProtocol: PROTOCOL_ALGEBRA,
 });
+protocolLookup.set("polygon-zkevm:0xD08B593eb3460B7aa5Ce76fFB0A3c5c938fd89b8", {
+  name: "quickswap",
+  underlyingProtocol: PROTOCOL_ALGEBRA,
+});
 protocolLookup.set("arbitrum-one:0x66cd859053c458688044d816117d5bdf42a56813", {
   name: "uniswap",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
