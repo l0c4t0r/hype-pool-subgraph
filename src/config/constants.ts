@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, TypedMap } from "@graphprotocol/graph-ts";
 
-export const VERSION = "1.1.0";
+export const VERSION = "1.1.2";
 
 export const PROTOCOL_ALGEBRA = "algebra";
 export const PROTOCOL_UNISWAP_V3 = "uniswapV3";
