@@ -31,3 +31,11 @@ protocolLookup.set("arbitrum-one:0xa216C2b6554A0293f69A1555dd22f4b7e60Fe907", {
   name: "camelot",
   underlyingProtocol: PROTOCOL_ALGEBRA,
 });
+protocolLookup.set("avalanche:0x3fe6f25da67dc6ad2a5117a691f9951ea14d6f15", {
+  name: "glacier",
+  underlyingProtocol: PROTOCOL_ALGEBRA,
+});
+protocolLookup.set("polygon:0xcac19d43c9558753d7535978a370055614ce832e", {
+  name: "retro",
+  underlyingProtocol: PROTOCOL_ALGEBRA,
+});

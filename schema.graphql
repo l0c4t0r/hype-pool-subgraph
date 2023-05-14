@@ -11,6 +11,7 @@ enum Network {
   optimism
   bsc
   pzke
+  avalanche
 }
 
 enum HypervisorPositionType {
