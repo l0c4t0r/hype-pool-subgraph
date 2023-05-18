@@ -37,5 +37,13 @@ protocolLookup.set("avalanche:0x3fe6f25da67dc6ad2a5117a691f9951ea14d6f15", {
 });
 protocolLookup.set("polygon:0xcac19d43c9558753d7535978a370055614ce832e", {
   name: "retro",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
+protocolLookup.set("polygon:0xf874d4957861e193aec9937223062679c14f9aca", {
+  name: "Spiritswap",
+  underlyingProtocol: PROTOCOL_ALGEBRA,
+});
+protocolLookup.set("moonbeam:0x6002d7714e8038f2058e8162b0b86c0b19c31908", {
+  name: "Spiritswap",
   underlyingProtocol: PROTOCOL_ALGEBRA,
 });

@@ -12,6 +12,8 @@ enum Network {
   bsc
   pzke
   avalanche
+  fantom
+  moonbeam
 }
 
 enum HypervisorPositionType {
