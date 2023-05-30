@@ -7,7 +7,7 @@ import {
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
-import { PROTOCOL_ALGEBRA } from "../../config/constants";
+import { PROTOCOL_ALGEBRA_V1 } from "../../config/constants";
 
 export function handleMint(event: Mint): void {
   processMint(
@@ -33,7 +33,7 @@ export function handleSwap(event: Swap): void {
     event.params.tick,
     event.params.price,
     event.block,
-    PROTOCOL_ALGEBRA
+    PROTOCOL_ALGEBRA_V1
   );
 }
 
@@ -45,6 +45,6 @@ export function handleFlash(event: Flash): void {
   updateProtocolFeeGrowthGlobal(
     event.address,
     event.block.number,
-    PROTOCOL_ALGEBRA
+    PROTOCOL_ALGEBRA_V1
   );
 }
