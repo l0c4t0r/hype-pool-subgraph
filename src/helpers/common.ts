@@ -1,7 +1,13 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
-import { AlgebraPool as AlgebraPoolContract } from "../../generated/templates/Pool/AlgebraPool";
+import { AlgebraV1Pool as AlgebraV1PoolContract } from "../../generated/templates/Pool/AlgebraV1Pool";
+import { AlgebraV2Pool as AlgebraV2PoolContract } from "../../generated/templates/Pool/AlgebraV2Pool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../config/constants";
+import {
+  BASE_POSITION,
+  LIMIT_POSITION,
+  PROTOCOL_ALGEBRA_V1,
+  PROTOCOL_ALGEBRA_V2,
+} from "../config/constants";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,
@@ -32,8 +38,13 @@ export function updateProtocolFeeGrowthOutside(
   let feeGrowthOutside0X128: BigInt;
   let feeGrowthOutside1X128: BigInt;
 
-  if (protocol == PROTOCOL_ALGEBRA) {
-    const algebraPoolContract = AlgebraPoolContract.bind(poolAddress);
+  if (protocol == PROTOCOL_ALGEBRA_V1) {
+    const algebraPoolContract = AlgebraV1PoolContract.bind(poolAddress);
+    const tickInfo = algebraPoolContract.ticks(tickIdx);
+    feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
+    feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
+  } else if (protocol == PROTOCOL_ALGEBRA_V2) {
+    const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
     const tickInfo = algebraPoolContract.ticks(tickIdx);
     feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
     feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
@@ -66,8 +77,12 @@ export function updateProtocolFeeGrowthGlobal(
   let feeGrowthGlobal0X128: BigInt;
   let feeGrowthGlobal1X128: BigInt;
 
-  if (protocol == PROTOCOL_ALGEBRA) {
-    const algebraPoolContract = AlgebraPoolContract.bind(poolAddress);
+  if (protocol == PROTOCOL_ALGEBRA_V1) {
+    const algebraPoolContract = AlgebraV1PoolContract.bind(poolAddress);
+    feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();
+    feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
+  } else if (protocol == PROTOCOL_ALGEBRA_V2) {
+    const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
     feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();
     feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
   } else {
@@ -115,8 +130,16 @@ export function updateProtocolPoolPositionFees(
   let feeGrowthInside0X128: BigInt;
   let feeGrowthInside1X128: BigInt;
 
-  if (protocol == PROTOCOL_ALGEBRA) {
-    const algebraPoolContract = AlgebraPoolContract.bind(poolAddress);
+  if (protocol == PROTOCOL_ALGEBRA_V1) {
+    const algebraPoolContract = AlgebraV1PoolContract.bind(poolAddress);
+    const position = algebraPoolContract.positions(hypervisorPosition.key!);
+    liquidity = position.getLiquidity();
+    tokensOwed0 = position.getFees0();
+    tokensOwed1 = position.getFees1();
+    feeGrowthInside0X128 = position.getInnerFeeGrowth0Token();
+    feeGrowthInside1X128 = position.getInnerFeeGrowth1Token();
+  } else if (protocol == PROTOCOL_ALGEBRA_V2) {
+    const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
     const position = algebraPoolContract.positions(hypervisorPosition.key!);
     liquidity = position.getLiquidity();
     tokensOwed0 = position.getFees0();
@@ -177,8 +200,13 @@ export function fullRefresh(
   let tick: i32;
   let price: BigInt;
 
-  if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA) {
-    const algebraPoolContract = AlgebraPoolContract.bind(poolAddress);
+  if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V1) {
+    const algebraPoolContract = AlgebraV1PoolContract.bind(poolAddress);
+    const globalState = algebraPoolContract.globalState();
+    tick = globalState.getTick();
+    price = globalState.getPrice();
+  } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2) {
+    const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
     const globalState = algebraPoolContract.globalState();
     tick = globalState.getTick();
     price = globalState.getPrice();

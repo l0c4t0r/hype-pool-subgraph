@@ -31,11 +31,13 @@ dataSources:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
         - name: Pool
-          file: ./abis/AlgebraPool.json
+          file: ./abis/AlgebraV2Pool.json
         - name: UniswapV3Pool
           file: ./abis/UniswapV3Pool.json
-        - name: AlgebraPool
-          file: ./abis/AlgebraPool.json
+        - name: AlgebraV1Pool
+          file: ./abis/AlgebraV1Pool.json
+        - name: AlgebraV2Pool
+          file: ./abis/AlgebraV2Pool.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -45,7 +47,7 @@ dataSources:
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
-      file: ./src/handlers/algebra/hypeRegistry.ts
+      file: ./src/handlers/algebraV2/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
   - name: Hypervisor
@@ -57,7 +59,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/handlers/algebra/hypervisor.ts
+      file: ./src/handlers/algebraV2/hypervisor.ts
       entities:
         - Hypervisor
         - HypervisorPosition
@@ -65,11 +67,13 @@ templates:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
         - name: Pool
-          file: ./abis/AlgebraPool.json
+          file: ./abis/AlgebraV2Pool.json
         - name: UniswapV3Pool
           file: ./abis/UniswapV3Pool.json
-        - name: AlgebraPool
-          file: ./abis/AlgebraPool.json
+        - name: AlgebraV1Pool
+          file: ./abis/AlgebraV1Pool.json
+        - name: AlgebraV2Pool
+          file: ./abis/AlgebraV2Pool.json
       eventHandlers:
         - event: Rebalance(int24,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebalance
@@ -86,7 +90,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/handlers/algebra/pool.ts
+      file: ./src/handlers/algebraV2/pool.ts
       entities:
         - Pool
         - Tick
@@ -94,11 +98,13 @@ templates:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
         - name: Pool
-          file: ./abis/AlgebraPool.json
+          file: ./abis/AlgebraV2Pool.json
         - name: UniswapV3Pool
           file: ./abis/UniswapV3Pool.json
-        - name: AlgebraPool
-          file: ./abis/AlgebraPool.json
+        - name: AlgebraV1Pool
+          file: ./abis/AlgebraV1Pool.json
+        - name: AlgebraV2Pool
+          file: ./abis/AlgebraV2Pool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint

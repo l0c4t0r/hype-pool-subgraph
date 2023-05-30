@@ -8,15 +8,16 @@
     "prepare:uniswap:mainnet": "mustache config/uniswapV3/mainnet.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:optimism": "mustache config/uniswapV3/optimism.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:polygon": "mustache config/uniswapV3/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
-    "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:zyberswap:arbitrum": "mustache config/zyberswap/arbitrum.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:thena:bsc": "mustache config/thena/bsc.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:quickswap:pzke": "mustache config/quickswap/pzke.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:camelot:arbitrum": "mustache config/camelot/arbitrum.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:glacier:avalanche": "mustache config/glacier/avalanche.json templates/algebra.yaml > subgraph.yaml",
+    "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:zyberswap:arbitrum": "mustache config/zyberswap/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:thena:bsc": "mustache config/thena/bsc.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:quickswap:pzke": "mustache config/quickswap/pzke.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:camelot:arbitrum": "mustache config/camelot/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:glacier:avalanche": "mustache config/glacier/avalanche.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:retro:polygon": "mustache config/retro/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
-    "prepare:spiritswap:fantom": "mustache config/spiritswap/fantom.json templates/algebra.yaml > subgraph.yaml",
-    "prepare:stellaswap:moonbeam": "mustache config/stellaswap/moonbeam.json templates/algebra.yaml > subgraph.yaml",
+    "prepare:spiritswap:fantom": "mustache config/spiritswap/fantom.json templates/algebraV2.yaml > subgraph.yaml",
+    "prepare:stellaswap:moonbeam": "mustache config/stellaswap/moonbeam.json templates/algebraV1.yaml > subgraph.yaml",
+    "prepare:beamswap:moonbeam": "mustache config/beamswap/moonbeam.json templates/uniswapV3.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
@@ -34,6 +35,7 @@
     "deploy:retro:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-retro-polygon",
     "deploy:spiritswap:fantom": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-spiritswap-fantom",
     "deploy:stellaswap:moonbeam": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-stellaswap-moonbeam",
+    "deploy:beamswap:moonbeam": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-beamswap-moonbeam",
     "deploy:lab": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/laboratory",
     "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
@@ -41,8 +43,8 @@
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.47.0",
-    "@graphprotocol/graph-ts": "^0.29.3"
+    "@graphprotocol/graph-cli": "^0.50.1",
+    "@graphprotocol/graph-ts": "^0.30.0"
   },
   "devDependencies": {
     "matchstick-as": "^0.5.2",

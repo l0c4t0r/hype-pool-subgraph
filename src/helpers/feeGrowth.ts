@@ -3,7 +3,12 @@ import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/H
 import { Tick } from "../../generated/schema";
 import { algebraPositionKey } from "./algebra";
 import { updateProtocolFeeGrowthOutside } from "./common";
-import { BASE_POSITION, LIMIT_POSITION, PROTOCOL_ALGEBRA } from "../config/constants";
+import {
+  BASE_POSITION,
+  LIMIT_POSITION,
+  PROTOCOL_ALGEBRA_V1,
+  PROTOCOL_ALGEBRA_V2,
+} from "../config/constants";
 import {
   getOrCreateHypervisor,
   getOrCreateHypervisorPosition,
@@ -128,7 +133,7 @@ function updateHypervisorPositionRanges(
     newTickUpper = hypervisorContract.limitUpper();
   }
 
-  if (protocol == PROTOCOL_ALGEBRA) {
+  if (protocol == PROTOCOL_ALGEBRA_V1 || protocol == PROTOCOL_ALGEBRA_V2) {
     position.key = algebraPositionKey(
       hypervisorAddress,
       newTickLower,

@@ -8,7 +8,7 @@ import { updateHypervisorRanges, updateTicks } from "../../helpers/feeGrowth";
 import {
   BASE_POSITION,
   LIMIT_POSITION,
-  PROTOCOL_ALGEBRA,
+  PROTOCOL_ALGEBRA_V1,
 } from "../../config/constants";
 import {
   updateSnapshotCurrentBlock,
@@ -27,20 +27,20 @@ export function handleRebalance(event: Rebalance): void {
     event.block.timestamp
   );
   // Set ranges
-  updateHypervisorRanges(event.address, event.block.number, PROTOCOL_ALGEBRA);
+  updateHypervisorRanges(event.address, event.block.number, PROTOCOL_ALGEBRA_V1);
   // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
-    PROTOCOL_ALGEBRA,
+    PROTOCOL_ALGEBRA_V1,
     true
   );
   updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
-    PROTOCOL_ALGEBRA,
+    PROTOCOL_ALGEBRA_V1,
     true
   );
   updateTvl(event.address, event.block.number);
@@ -50,7 +50,7 @@ export function handleRebalance(event: Rebalance): void {
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     event.block.number,
-    PROTOCOL_ALGEBRA,
+    PROTOCOL_ALGEBRA_V1,
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);

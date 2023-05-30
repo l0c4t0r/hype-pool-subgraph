@@ -1,6 +1,7 @@
 enum UnderlyingProtocol {
   uniswapV3
-  algebra
+  algebraV1
+  algebraV2
 }
 
 enum Network {

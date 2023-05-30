@@ -27,7 +27,7 @@ import {
   ZERO_BD,
   ZERO_BI,
 } from "../config/constants";
-import { createAlgebraPool } from "./algebra";
+import { createAlgebraV1Pool, createAlgebraV2Pool } from "./algebra";
 import { createUniswapV3Pool } from "./uniswapV3";
 import { protocolLookup } from "../config/lookups";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./token";
@@ -161,7 +161,10 @@ export function getOrCreatePool(poolAddress: Address): Pool {
   if (!pool) {
     pool = createUniswapV3Pool(poolAddress);
     if (!pool) {
-      pool = createAlgebraPool(poolAddress);
+      pool = createAlgebraV1Pool(poolAddress);
+      if (!pool) {
+        pool = createAlgebraV2Pool(poolAddress);
+      }
     }
 
     if (pool) {
