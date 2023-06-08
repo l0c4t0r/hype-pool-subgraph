@@ -206,8 +206,9 @@ export class BaseTokenDefinition {
     const HAY_FRXETH = "0xf8a4cdf9efc4b9b38eaa6e27ee281cb2111fa664";
     const HAY_USDT = "0x5b0baf66718caabda49a4af32eb455c3b99b5821";
     const WBNB_STKBNB = "0x84b78452a97c5afda1400943333f691448069a29";
-    const USDT_FRAX = "0x8d65dbe7206a768c466073af0ab6d76f9e14fc6d";
-    const DOLA_FRAX = "0xfd66a4a4c921cd7194abab38655476a06fbaea05";
+    const BNBX_FRAX = "0x8ab8fd902039a48e51735452b1f97c93cb034e80";
+    const WUSDR_USDC = "0x3f8062cf591a918bc3b183fa241ec49efbd30e2b";
+    const WUSDR_DOLA = "0xdb6bff81311c5c4f72668d9c4c8a5e2cb4584a82";
 
     let lookup = new TypedMap<string, BasePool>();
     lookup.set(USDC, { pathIdx: [-1], path: [ADDRESS_ZERO], priority: 12 });
@@ -233,13 +234,13 @@ export class BaseTokenDefinition {
       priority: 7,
     });
     lookup.set(FRAX, {
-      pathIdx: [0, 1],
-      path: [USDT_FRAX, USDT_USDC],
+      pathIdx: [0, 1, 1, 0, 1],
+      path: [BNBX_FRAX, BNBX_WBNB, WBNB_BUSD, USDT_BUSD, USDT_USDC],
       priority: 6,
     });
     lookup.set(DOLA, {
-      pathIdx: [1, 0, 1],
-      path: [DOLA_FRAX, USDT_FRAX, USDT_USDC],
+      pathIdx: [0, 1],
+      path: [WUSDR_DOLA, WUSDR_USDC],
       priority: 5,
     });
     lookup.set(ANKRBNB, {
@@ -333,15 +334,23 @@ export class BaseTokenDefinition {
     const WGLMR = "0xacc15dc74880c9944775448304b263d191c6077f";
 
     // const USDT_USDC = "";
-    const WGLMR_WBTC = "0x416bd9798d5214cae6f837c0a53a73beb3ced465"
-    const WETH_WGLMR = "0x7e71d586ad01c0bf7953eb82e7b76c1338b0068c"
-    const USDC_WGLMR = "0xab8c35164a8e3ef302d18da953923ea31f0fe393"
+    const WGLMR_WBTC = "0x416bd9798d5214cae6f837c0a53a73beb3ced465";
+    const WETH_WGLMR = "0x7e71d586ad01c0bf7953eb82e7b76c1338b0068c";
+    const USDC_WGLMR = "0xab8c35164a8e3ef302d18da953923ea31f0fe393";
 
     let lookup = new TypedMap<string, BasePool>();
     lookup.set(USDC, { pathIdx: [-1], path: [ADDRESS_ZERO], priority: 4 });
     lookup.set(WGLMR, { pathIdx: [0], path: [USDC_WGLMR], priority: 3 });
-    lookup.set(WETH, { pathIdx: [1, 0], path: [WETH_WGLMR, USDC_WGLMR], priority: 2 });
-    lookup.set(WBTC, { pathIdx: [0, 0], path: [WGLMR_WBTC, USDC_WGLMR], priority: 1 });
+    lookup.set(WETH, {
+      pathIdx: [1, 0],
+      path: [WETH_WGLMR, USDC_WGLMR],
+      priority: 2,
+    });
+    lookup.set(WBTC, {
+      pathIdx: [0, 0],
+      path: [WGLMR_WBTC, USDC_WGLMR],
+      priority: 1,
+    });
 
     return lookup as TypedMap<string, BasePool>;
   }

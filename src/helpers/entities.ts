@@ -90,7 +90,12 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
     if (feeCall.reverted) {
       hypervisor.fee = 10;
     } else {
-      hypervisor.fee = feeCall.value;
+      if (feeCall.value <= 100) {
+        hypervisor.fee = feeCall.value;
+      } else {
+        // Old hypes use pool fees, hardcode to 10
+        hypervisor.fee = 10;
+      }
     }
 
     hypervisor.totalSupply = ZERO_BI;
