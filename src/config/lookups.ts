@@ -55,3 +55,11 @@ protocolLookup.set("moonbeam:0xb7dfc304d9cd88d98a262ce5b6a39bb9d6611063", {
   name: "Beamswap",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
+protocolLookup.set("matic:0x97686103b3e7238ca6c2c439146b30adbd84a593", {
+  name: "sushi",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
+protocolLookup.set("arbitrum-one:0x0f867f14b39a5892a39841a03ba573426de4b1d0", {
+  name: "sushi",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});

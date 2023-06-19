@@ -1,0 +1,10 @@
+{
+  "network": "matic",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x97686103B3E7238Ca6c2C439146B30adBd84a593",
+      "startBlock": 43578714
+    }
+  ]
+}

@@ -18,6 +18,8 @@
     "prepare:spiritswap:fantom": "mustache config/spiritswap/fantom.json templates/algebraV2.yaml > subgraph.yaml",
     "prepare:stellaswap:moonbeam": "mustache config/stellaswap/moonbeam.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:beamswap:moonbeam": "mustache config/beamswap/moonbeam.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:sushi:polygon": "mustache config/sushi/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:sushi:arbitrum": "mustache config/sushi/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
@@ -36,6 +38,8 @@
     "deploy:spiritswap:fantom": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-spiritswap-fantom",
     "deploy:stellaswap:moonbeam": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-stellaswap-moonbeam",
     "deploy:beamswap:moonbeam": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-beamswap-moonbeam",
+    "deploy:sushi:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-sushi-polygon",
+    "deploy:sushi:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-sushi-arbitrum",
     "deploy:lab": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/laboratory",
     "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
@@ -43,8 +47,8 @@
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.50.1",
-    "@graphprotocol/graph-ts": "^0.30.0"
+    "@graphprotocol/graph-cli": "^0.51.1",
+    "@graphprotocol/graph-ts": "^0.31.0"
   },
   "devDependencies": {
     "matchstick-as": "^0.5.2",
