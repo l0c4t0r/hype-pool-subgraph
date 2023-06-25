@@ -1,4 +1,10 @@
-import { Address, BigInt, Bytes, dataSource } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  BigInt,
+  Bytes,
+  dataSource,
+  log,
+} from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import {
   FeeCollectionSnapshot,
@@ -27,6 +33,7 @@ import {
   ZERO_BD,
   ZERO_BI,
 } from "../config/constants";
+import { Token as TokenTemplate } from "../../generated/templates";
 import { createAlgebraV1Pool, createAlgebraV2Pool } from "./algebra";
 import { createUniswapV3Pool } from "./uniswapV3";
 import { protocolLookup } from "../config/lookups";
@@ -67,6 +74,7 @@ export function getOrCreateProtocol(): Protocol {
       .concat(networkName)
       .concat("-")
       .concat(VERSION);
+    protocol.dex = name;
     protocol.underlyingProtocol = underlyingProtocol;
     protocol.network = networkName;
     protocol.version = VERSION;
@@ -228,8 +236,20 @@ export function getOrCreateToken(tokenAddress: Address): Token {
     token.lastUpdatedTimestamp = ZERO_BI;
     token._previousPriceUSD = ZERO_BD;
     token.save();
+
+    // Track token contract for any name/symbol changes
+    TokenTemplate.create(tokenAddress);
   }
   return token;
+}
+
+export function updateToken(tokenAddress: Address): void {
+  const token = getOrCreateToken(tokenAddress);
+
+  token.symbol = fetchTokenSymbol(tokenAddress);
+  token.name = fetchTokenName(tokenAddress);
+
+  token.save();
 }
 
 export function createFeeSnapshot(

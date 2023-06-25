@@ -17,17 +17,18 @@ import {
 import { updateTvl } from "../../helpers/hypervisor";
 import { processSetFee, processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
-import { getOrCreateHypervisor } from "../../helpers/entities";
+import { getOrCreateHypervisor, getOrCreateProtocol } from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
 
 export function handleRebalance(event: Rebalance): void {
+  const protocol = getOrCreateProtocol()
   updateSnapshotPreviousBlock(
     event.address,
     event.block.number,
     event.block.timestamp
   );
   // Set ranges
-  updateHypervisorRanges(event.address, event.block.number, PROTOCOL_ALGEBRA_V1);
+  updateHypervisorRanges(event.address, event.block.number, protocol);
   // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
@@ -50,7 +51,7 @@ export function handleRebalance(event: Rebalance): void {
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     event.block.number,
-    PROTOCOL_ALGEBRA_V1,
+    protocol,
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);

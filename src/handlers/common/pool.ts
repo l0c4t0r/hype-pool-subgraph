@@ -11,6 +11,7 @@ import {
   updatePoolPricing,
 } from "../../helpers/pool";
 import { tickCrossed } from "../../helpers/ticks";
+import { Protocol } from "../../../generated/schema";
 
 export function processMint(
   poolAddress: Address,
@@ -29,7 +30,7 @@ export function processMint(
       poolAddress,
       tickLower,
       blockNumber,
-      protocol.underlyingProtocol
+      protocol
     );
   }
   if (activeTicks.includes(tickUpper)) {
@@ -37,7 +38,7 @@ export function processMint(
       poolAddress,
       tickUpper,
       blockNumber,
-      protocol.underlyingProtocol
+      protocol
     );
   }
 }
@@ -59,7 +60,7 @@ export function processBurn(
       poolAddress,
       tickLower,
       blockNumber,
-      protocol.underlyingProtocol
+      protocol
     );
   }
   if (activeTicks.includes(tickUpper)) {
@@ -67,7 +68,7 @@ export function processBurn(
       poolAddress,
       tickUpper,
       blockNumber,
-      protocol.underlyingProtocol
+      protocol
     );
   }
 }
@@ -77,7 +78,7 @@ export function processSwap(
   tick: i32,
   price: BigInt,
   block: ethereum.Block,
-  protocol: string
+  protocol: Protocol
 ): void {
   const pool = getOrCreatePool(poolAddress);
   const previousTick = pool.currentTick;
@@ -99,5 +100,9 @@ export function processSwap(
     }
   }
   updateLinkedHypervisorTvl(poolAddress, block);
-  updateProtocolFeeGrowthGlobal(poolAddress, block.number, protocol);
+  updateProtocolFeeGrowthGlobal(
+    poolAddress,
+    block.number,
+    protocol.underlyingProtocol
+  );
 }

@@ -41,7 +41,7 @@ export function processZeroBurn(
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     block.number,
-    protocol.underlyingProtocol,
+    protocol,
     false
   );
   updateSnapshotCurrentBlock(hypervisorAddress, block.number, false);

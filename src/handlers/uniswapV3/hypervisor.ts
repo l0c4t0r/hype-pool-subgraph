@@ -19,10 +19,14 @@ import {
 import { updateTvl } from "../../helpers/hypervisor";
 import { processSetFee, processZeroBurn } from "../common/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
-import { getOrCreateHypervisor } from "../../helpers/entities";
+import {
+  getOrCreateHypervisor,
+  getOrCreateProtocol,
+} from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
 
 export function handleDeposit(event: Deposit): void {
+  const protocol = getOrCreateProtocol();
   updateSnapshotPreviousBlock(
     event.address,
     event.block.number,
@@ -49,13 +53,14 @@ export function handleDeposit(event: Deposit): void {
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     event.block.number,
-    PROTOCOL_UNISWAP_V3,
+    protocol,
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
   initFastSyncPools(event.address, event.block);
 }
 export function handleWithdraw(event: Withdraw): void {
+  const protocol = getOrCreateProtocol()
   updateSnapshotPreviousBlock(
     event.address,
     event.block.number,
@@ -82,37 +87,34 @@ export function handleWithdraw(event: Withdraw): void {
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     event.block.number,
-    PROTOCOL_UNISWAP_V3,
+    protocol,
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
   initFastSyncPools(event.address, event.block);
 }
 export function handleRebalance(event: Rebalance): void {
+  const protocol = getOrCreateProtocol();
   updateSnapshotPreviousBlock(
     event.address,
     event.block.number,
     event.block.timestamp
   );
   // Set ranges
-  updateHypervisorRanges(
-    event.address,
-    event.block.number,
-    PROTOCOL_UNISWAP_V3
-  );
+  updateHypervisorRanges(event.address, event.block.number, protocol);
   // Force updates on everything as rebalance changes ranges
   updateProtocolPoolPositionFees(
     event.address,
     BASE_POSITION,
     event.block.number,
-    PROTOCOL_UNISWAP_V3,
+    protocol.underlyingProtocol,
     true
   );
   updateProtocolPoolPositionFees(
     event.address,
     LIMIT_POSITION,
     event.block.number,
-    PROTOCOL_UNISWAP_V3,
+    protocol.underlyingProtocol,
     true
   );
   updateTvl(event.address, event.block.number);
@@ -122,7 +124,7 @@ export function handleRebalance(event: Rebalance): void {
   updateTicks(
     Address.fromBytes(hypervisor.pool),
     event.block.number,
-    PROTOCOL_UNISWAP_V3,
+    protocol,
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);

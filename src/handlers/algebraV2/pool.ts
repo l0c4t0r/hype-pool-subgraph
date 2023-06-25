@@ -8,6 +8,7 @@ import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
 import { PROTOCOL_ALGEBRA_V2 } from "../../config/constants";
+import { getOrCreateProtocol } from "../../helpers/entities";
 
 export function handleMint(event: Mint): void {
   processMint(
@@ -33,7 +34,7 @@ export function handleSwap(event: Swap): void {
     event.params.tick,
     event.params.price,
     event.block,
-    PROTOCOL_ALGEBRA_V2
+    getOrCreateProtocol()
   );
 }
 

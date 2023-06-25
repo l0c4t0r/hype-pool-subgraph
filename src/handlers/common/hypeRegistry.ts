@@ -86,7 +86,7 @@ export function processHypeAdded(
     updateHypervisorRanges(
       hypervisorAddress,
       block.number,
-      protocol.underlyingProtocol
+      protocol
     );
 
     HypervisorTemplate.create(hypervisorAddress);

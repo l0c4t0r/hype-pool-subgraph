@@ -1,6 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
-import { Tick } from "../../generated/schema";
+import { Protocol, Tick } from "../../generated/schema";
 import { algebraPositionKey } from "./algebra";
 import { updateProtocolFeeGrowthOutside } from "./common";
 import {
@@ -84,7 +84,7 @@ export function updateFeeGrowthGlobal(
 export function updateHypervisorRanges(
   hypervisorAddress: Address,
   blockNumber: BigInt,
-  protocol: string,
+  protocol: Protocol,
   force: boolean = false
 ): void {
   updateHypervisorPositionRanges(
@@ -110,7 +110,7 @@ function updateHypervisorPositionRanges(
   hypervisorAddress: Address,
   positionType: string,
   blockNumber: BigInt,
-  protocol: string,
+  protocol: Protocol,
   force: boolean = false
 ): void {
   const hypervisor = getOrCreateHypervisor(hypervisorAddress);
@@ -133,7 +133,10 @@ function updateHypervisorPositionRanges(
     newTickUpper = hypervisorContract.limitUpper();
   }
 
-  if (protocol == PROTOCOL_ALGEBRA_V1 || protocol == PROTOCOL_ALGEBRA_V2) {
+  if (
+    protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V1 ||
+    protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2
+  ) {
     position.key = algebraPositionKey(
       hypervisorAddress,
       newTickLower,
@@ -173,7 +176,7 @@ function updateHypervisorPositionRanges(
 export function updateTicks(
   poolAddress: Address,
   blockNumber: BigInt,
-  protocol: string,
+  protocol: Protocol,
   force: boolean = false
 ): void {
   const pool = getOrCreatePool(poolAddress);

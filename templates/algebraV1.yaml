@@ -105,6 +105,8 @@ templates:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: CamelotPool
+          file: ./abis/AlgebraV2CamelotPool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint
@@ -114,3 +116,21 @@ templates:
           handler: handleSwap
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash
+  - name: Token
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
+      file: ./src/handlers/common/token.ts

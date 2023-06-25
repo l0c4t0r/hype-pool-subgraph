@@ -37,6 +37,8 @@ type Protocol @entity(immutable: true) {
   id: String!
   "Name of protocol"
   name: String!
+  "Name of DEX"
+  dex: String!
   "Underlying infrastructure protocol"
   underlyingProtocol: UnderlyingProtocol!
   "Network/chain"

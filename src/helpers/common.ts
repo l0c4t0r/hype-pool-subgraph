@@ -1,6 +1,7 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { AlgebraV1Pool as AlgebraV1PoolContract } from "../../generated/templates/Pool/AlgebraV1Pool";
 import { AlgebraV2Pool as AlgebraV2PoolContract } from "../../generated/templates/Pool/AlgebraV2Pool";
+import { CamelotPool as CamelotPoolContract} from "../../generated/templates/Pool/CamelotPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
 import {
   BASE_POSITION,
@@ -23,12 +24,13 @@ import {
   updatePositionFees,
 } from "./feeGrowth";
 import { updateLinkedHypervisorTvl, updatePoolPricing } from "./pool";
+import { Protocol } from "../../generated/schema";
 
 export function updateProtocolFeeGrowthOutside(
   poolAddress: Address,
   tickIdx: i32,
   blockNumber: BigInt,
-  protocol: string,
+  protocol: Protocol,
   force: boolean = false
 ): void {
   if (tickUpToDate(poolAddress, tickIdx, blockNumber) && !force) {
@@ -38,16 +40,24 @@ export function updateProtocolFeeGrowthOutside(
   let feeGrowthOutside0X128: BigInt;
   let feeGrowthOutside1X128: BigInt;
 
-  if (protocol == PROTOCOL_ALGEBRA_V1) {
+  if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V1) {
     const algebraPoolContract = AlgebraV1PoolContract.bind(poolAddress);
     const tickInfo = algebraPoolContract.ticks(tickIdx);
     feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
     feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
-  } else if (protocol == PROTOCOL_ALGEBRA_V2) {
-    const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
-    const tickInfo = algebraPoolContract.ticks(tickIdx);
-    feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
-    feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
+  } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2) {
+    if (protocol.dex == "camelot") {
+      const camelotPoolContract = CamelotPoolContract.bind(poolAddress);
+      const tickInfo = camelotPoolContract.ticks(tickIdx);
+      feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
+      feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
+    } else {
+      const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
+      const tickInfo = algebraPoolContract.ticks(tickIdx);
+      feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
+      feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
+    }
+    
   } else {
     const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
     const tickInfo = uniswapPoolContract.ticks(tickIdx);
@@ -179,7 +189,7 @@ export function fullRefresh(
   updateHypervisorRanges(
     hypervisorAddress,
     block.number,
-    protocol.underlyingProtocol,
+    protocol,
     true
   );
   updateProtocolPoolPositionFees(
