@@ -33,7 +33,7 @@ protocolLookup.set("polygon-zkevm:0xd08b593eb3460b7aa5ce76ffb0a3c5c938fd89b8", {
 });
 protocolLookup.set("arbitrum-one:0xa216c2b6554a0293f69a1555dd22f4b7e60fe907", {
   name: "camelot",
-  underlyingProtocol: PROTOCOL_ALGEBRA_V2,
+  underlyingProtocol: PROTOCOL_ALGEBRA_V1,
 });
 protocolLookup.set("avalanche:0x3fe6f25da67dc6ad2a5117a691f9951ea14d6f15", {
   name: "glacier",

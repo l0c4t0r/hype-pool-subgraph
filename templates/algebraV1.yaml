@@ -36,6 +36,8 @@ dataSources:
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraV1Pool
           file: ./abis/AlgebraV1Pool.json
+        - name: CamelotPool
+          file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
         - name: ERC20
@@ -72,6 +74,8 @@ templates:
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraV1Pool
           file: ./abis/AlgebraV1Pool.json
+        - name: CamelotPool
+          file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
       eventHandlers:
@@ -103,10 +107,10 @@ templates:
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraV1Pool
           file: ./abis/AlgebraV1Pool.json
+        - name: CamelotPool
+          file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
-        - name: CamelotPool
-          file: ./abis/AlgebraV2CamelotPool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint

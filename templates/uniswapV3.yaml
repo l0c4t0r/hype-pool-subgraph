@@ -110,7 +110,7 @@ templates:
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
         - name: CamelotPool
-          file: ./abis/AlgebraV2CamelotPool.json
+          file: ./abis/AlgebraV1CamelotPool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint

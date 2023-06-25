@@ -12,7 +12,7 @@
     "prepare:zyberswap:arbitrum": "mustache config/zyberswap/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:thena:bsc": "mustache config/thena/bsc.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:quickswap:pzke": "mustache config/quickswap/pzke.json templates/algebraV1.yaml > subgraph.yaml",
-    "prepare:camelot:arbitrum": "mustache config/camelot/arbitrum.json templates/algebraV2.yaml > subgraph.yaml",
+    "prepare:camelot:arbitrum": "mustache config/camelot/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:glacier:avalanche": "mustache config/glacier/avalanche.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:retro:polygon": "mustache config/retro/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:spiritswap:fantom": "mustache config/spiritswap/fantom.json templates/algebraV2.yaml > subgraph.yaml",
