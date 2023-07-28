@@ -3,6 +3,7 @@ import { AlgebraV1Pool as AlgebraV1PoolContract } from "../../generated/template
 import { AlgebraV2Pool as AlgebraV2PoolContract } from "../../generated/templates/Pool/AlgebraV2Pool";
 import { CamelotPool as CamelotPoolContract } from "../../generated/templates/Pool/CamelotPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
+import { RamsesV2Pool as RamsesV2PoolContract } from "../../generated/templates/Pool/RamsesV2Pool";
 import {
   BASE_POSITION,
   LIMIT_POSITION,
@@ -58,10 +59,17 @@ export function updateProtocolFeeGrowthOutside(
     feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
     feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
   } else {
-    const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
-    const tickInfo = uniswapPoolContract.ticks(tickIdx);
-    feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();
-    feeGrowthOutside1X128 = tickInfo.getFeeGrowthOutside1X128();
+    if (protocol.dex == "ramses") {
+      const ramsesPoolContract = RamsesV2PoolContract.bind(poolAddress);
+      const tickInfo = ramsesPoolContract.ticks(tickIdx);
+      feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();
+      feeGrowthOutside1X128 = tickInfo.getFeeGrowthOutside1X128();
+    } else {
+      const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
+      const tickInfo = uniswapPoolContract.ticks(tickIdx);
+      feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();
+      feeGrowthOutside1X128 = tickInfo.getFeeGrowthOutside1X128();
+    }
   }
 
   updateFeeGrowthOutside(

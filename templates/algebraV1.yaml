@@ -111,6 +111,8 @@ templates:
           file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: RamsesV2Pool
+          file: ./abis/RamsesV2Pool.json
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint

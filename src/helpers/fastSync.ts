@@ -1,4 +1,4 @@
-import { Address, ethereum } from "@graphprotocol/graph-ts";
+import { Address, ethereum, log } from "@graphprotocol/graph-ts";
 import { Pool as PoolTemplate } from "../../generated/templates";
 import { fullRefresh } from "./common";
 import { FAST_SYNC } from "../config/fastSync";

@@ -97,9 +97,21 @@ export function isNullEthValue(value: string): boolean {
 }
 
 export function isUSDC(tokenAddress: Address): boolean {
-  let addressLookup = constantAddresses.network(dataSource.network());
-  let usdcAddress = addressLookup.get("USDC") as string;
-  return tokenAddress == Address.fromString(usdcAddress);
+  const addressLookup = constantAddresses.network(dataSource.network());
+  const usdcAddress = addressLookup.get("USDC") as string;
+  const usdceAddress = addressLookup.get("USDCe")
+
+  if (tokenAddress == Address.fromString(usdcAddress)) {
+    return true
+  }
+
+  if (usdceAddress) {
+    if ( tokenAddress == Address.fromString(usdceAddress)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 export function updateTokenPrice(

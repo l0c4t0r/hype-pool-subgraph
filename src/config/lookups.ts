@@ -63,3 +63,7 @@ protocolLookup.set("arbitrum-one:0x0f867f14b39a5892a39841a03ba573426de4b1d0", {
   name: "sushi",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
+protocolLookup.set("arbitrum-one:0x34ffbd9db6b9bd8b095a0d156de69a2ad2944666", {
+  name: "ramses",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});

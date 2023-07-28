@@ -2,6 +2,7 @@ import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import { Protocol, Tick } from "../../generated/schema";
 import { algebraPositionKey } from "./algebra";
+import { ramsesPositionKey } from "./ramses";
 import { updateProtocolFeeGrowthOutside } from "./common";
 import {
   BASE_POSITION,
@@ -143,11 +144,19 @@ function updateHypervisorPositionRanges(
       newTickUpper
     );
   } else {
-    position.key = uniswapV3PositionKey(
-      hypervisorAddress,
-      newTickLower,
-      newTickUpper
-    );
+    if (protocol.dex == "ramses") {
+      position.key = ramsesPositionKey(
+        hypervisorAddress,
+        newTickLower,
+        newTickUpper
+      )
+    } else {
+      position.key = uniswapV3PositionKey(
+        hypervisorAddress,
+        newTickLower,
+        newTickUpper
+      );
+    }
   }
 
   const tickLower = getOrCreateTick(poolAddress, newTickLower);

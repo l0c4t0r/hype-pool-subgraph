@@ -1,5 +1,11 @@
 {
     "network": "bsc",
+    "graft": [
+      {
+        "base": "QmQrnEpYtYD9e4FdQEaQ1JRDQd5xMhArFZiAoxMo6UQS1x",
+        "block": 29362999
+      }
+    ],
     "hypeRegistry": [
       {
         "name": "HypeRegistry",
