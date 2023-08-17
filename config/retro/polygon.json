@@ -1,5 +1,9 @@
 {
   "network": "matic",
+  "graft": {
+    "base": "QmWGAfWbMarPTA6VezN1sGJq2psZjFoNS1p1yXdh8PnR11",
+    "block": 45476475
+  },
   "hypeRegistry": [
     {
       "name": "HypeRegistry",

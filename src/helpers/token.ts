@@ -9,7 +9,7 @@ import { StaticTokenDefinition } from "../config/staticTokenDefinition";
 import { ERC20 } from "../../generated/HypeRegistry/ERC20";
 import { ERC20SymbolBytes } from "../../generated/HypeRegistry/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../../generated/HypeRegistry/ERC20NameBytes";
-import { getOrCreateToken } from "./entities";
+import { getOrCreateProtocol, getOrCreateToken } from "./entities";
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
@@ -97,9 +97,11 @@ export function isNullEthValue(value: string): boolean {
 }
 
 export function isUSDC(tokenAddress: Address): boolean {
-  const addressLookup = constantAddresses.network(dataSource.network());
+  const protocol = getOrCreateProtocol()
+  const addressLookup = constantAddresses.network(protocol.network);
   const usdcAddress = addressLookup.get("USDC") as string;
   const usdceAddress = addressLookup.get("USDCe")
+  const usdtMantleAddress = addressLookup.get("USDT_MANTLE");
 
   if (tokenAddress == Address.fromString(usdcAddress)) {
     return true
@@ -108,6 +110,12 @@ export function isUSDC(tokenAddress: Address): boolean {
   if (usdceAddress) {
     if ( tokenAddress == Address.fromString(usdceAddress)) {
       return true
+    }
+  }
+
+  if (usdtMantleAddress) {
+    if (tokenAddress == Address.fromString(usdtMantleAddress)) {
+      return true;
     }
   }
 

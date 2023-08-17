@@ -63,6 +63,10 @@ export function getOrCreateProtocol(): Protocol {
       networkName = "arbitrum";
     } else if (network == "polygon-zkevm") {
       networkName = "pzke";
+    } else if (name == "linea-mainnet") {
+      networkName = "linea";
+    } else if (name == "fusionx") {
+      networkName = "mantle";
     }
 
     protocol.name = "hypePool"
@@ -426,7 +430,16 @@ export function getOrCreatePoolPricing(
   if (!pricing) {
     pricing = new _PoolPricing(poolAddress);
 
-    let baseTokenLookup = BaseTokenDefinition.network(dataSource.network());
+    let network: string;
+    const dataSourceNetwork = dataSource.network();
+    const protocol = getOrCreateProtocol();
+    if (protocol.dex == "fusionx" && dataSourceNetwork == "mainnet") {
+      network = "mantle";
+    } else {
+      network = dataSourceNetwork;
+    }
+
+    let baseTokenLookup = BaseTokenDefinition.network(network);
     let token0Lookup = baseTokenLookup.get(token0Address.toHex());
     if (token0Lookup == null) {
       token0Lookup = BaseTokenDefinition.nonBase();
