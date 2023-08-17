@@ -52,7 +52,8 @@
     "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 l0c4t0r/hype-pool-uniswap-v3-arbitrum",
-    "test": "graph test"
+    "test": "graph test",
+    "clean": "rimraf generated build"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.51.1",

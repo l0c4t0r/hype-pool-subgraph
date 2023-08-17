@@ -3,7 +3,7 @@ import {
   Flash,
   Mint,
   Swap,
-} from "../../../generated/templates/Pool/AlgebraPool";
+} from "../../../generated/templates/Pool/AlgebraV1Pool";
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
