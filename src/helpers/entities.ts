@@ -430,16 +430,9 @@ export function getOrCreatePoolPricing(
   if (!pricing) {
     pricing = new _PoolPricing(poolAddress);
 
-    let network: string;
-    const dataSourceNetwork = dataSource.network();
     const protocol = getOrCreateProtocol();
-    if (protocol.dex == "fusionx" && dataSourceNetwork == "mainnet") {
-      network = "mantle";
-    } else {
-      network = dataSourceNetwork;
-    }
 
-    let baseTokenLookup = BaseTokenDefinition.network(network);
+    let baseTokenLookup = BaseTokenDefinition.network(protocol.network);
     let token0Lookup = baseTokenLookup.get(token0Address.toHex());
     if (token0Lookup == null) {
       token0Lookup = BaseTokenDefinition.nonBase();

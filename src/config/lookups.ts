@@ -79,3 +79,7 @@ protocolLookup.set("linea-mainnet:0xc27ddd78fc49875fe6f844b72bbf31dfbb099881", {
   name: "lynex",
   underlyingProtocol: PROTOCOL_ALGEBRA_V1,
 });
+protocolLookup.set("base:0x1e86a593e55215957c4755f1be19a229af3286f6", {
+  name: "synthswap",
+  underlyingProtocol: PROTOCOL_ALGEBRA_V1,
+});

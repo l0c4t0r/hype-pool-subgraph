@@ -18,6 +18,7 @@ enum Network {
   mantle
   rollux
   linea
+  base
 }
 
 enum HypervisorPositionType {

@@ -1,7 +1,6 @@
 import {
   Address,
   BigDecimal,
-  dataSource,
   ethereum,
 } from "@graphprotocol/graph-ts";
 import { constantAddresses, DEFAULT_DECIMAL } from "../config/constants";
@@ -102,6 +101,7 @@ export function isUSDC(tokenAddress: Address): boolean {
   const usdcAddress = addressLookup.get("USDC") as string;
   const usdceAddress = addressLookup.get("USDCe")
   const usdtMantleAddress = addressLookup.get("USDT_MANTLE");
+  const busdLineaAddress = addressLookup.get("BUSD_LINEA")
 
   if (tokenAddress == Address.fromString(usdcAddress)) {
     return true
@@ -115,6 +115,12 @@ export function isUSDC(tokenAddress: Address): boolean {
 
   if (usdtMantleAddress) {
     if (tokenAddress == Address.fromString(usdtMantleAddress)) {
+      return true;
+    }
+  }
+
+  if (busdLineaAddress) {
+    if (tokenAddress == Address.fromString(busdLineaAddress)) {
       return true;
     }
   }

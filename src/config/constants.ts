@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, TypedMap } from "@graphprotocol/graph-ts";
 
-export const VERSION = "1.5.0";
+export const VERSION = "1.6.0";
 
 export const PROTOCOL_ALGEBRA_V1 = "algebraV1";
 export const PROTOCOL_ALGEBRA_V2 = "algebraV2";
@@ -104,9 +104,18 @@ export class constantAddresses {
   static linea(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
     lookup.set("USDC", "0x176211869ca2b568f2a7d4ee941e073a821ee1ff");
+    lookup.set("BUSD_LINEA", "0x7d43aabc515c356145049227cee54b608342c0ad");
 
     return lookup as TypedMap<string, string>;
   }
+
+  static base(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca");
+
+    return lookup as TypedMap<string, string>;
+  }
+
 
   static network(network: string): TypedMap<string, string> {
     let mapping = new TypedMap<string, string>();
@@ -134,6 +143,8 @@ export class constantAddresses {
       mapping = this.mantle();
     } else if (network == "linea") {
       mapping = this.linea();
+    } else if (network == "base") {
+      mapping = this.base();
     }
 
     return mapping as TypedMap<string, string>;

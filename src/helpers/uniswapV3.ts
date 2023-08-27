@@ -32,7 +32,7 @@ export function createUniswapV3Pool(poolAddress: Address): Pool | null {
   pool.currentTick = slot0.value.getTick();
   pool.sqrtPriceX96 = slot0.value.getSqrtPriceX96();
   pool.feeGrowthGlobal0X128 = poolContract.feeGrowthGlobal0X128();
-  pool.feeGrowthGlobal1X128 = poolContract.feeGrowthGlobal0X128();
+  pool.feeGrowthGlobal1X128 = poolContract.feeGrowthGlobal1X128();
   pool._protocol = PROTOCOL_UNISWAP_V3;
 
   return pool;
