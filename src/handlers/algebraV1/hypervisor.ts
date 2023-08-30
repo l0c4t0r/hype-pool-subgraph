@@ -55,7 +55,7 @@ export function handleRebalance(event: Rebalance): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
-  initFastSyncPools(event.address, event.block);
+  initFastSyncPools(event.block);
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {

@@ -74,10 +74,10 @@ export function processHypeAdded(
       }
     }
 
-    hypervisor = getOrCreateHypervisor(hypervisorAddress);
-    // Initialize pricing related to underlying pool
+    hypervisor = getOrCreateHypervisor(hypervisorAddress, block.number);
+    // // Initialize pricing related to underlying pool
     const poolAddress = Address.fromBytes(hypervisor.pool);
-    const pool = getOrCreatePool(poolAddress);
+    const pool = getOrCreatePool(poolAddress, block.number);
     updatePoolPricing(poolAddress, pool.currentTick, pool.sqrtPriceX96, block);
 
     updateHypervisorList(poolAddress, hypervisorAddress);

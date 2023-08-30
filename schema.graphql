@@ -288,10 +288,17 @@ type _PoolPricing @entity {
   usdPath: [String!]!
   "Whether the USD token in usdPool is token0 or token1"
   usdPathIndex: [Int!]!
+  usdPathStartBlock: [Int!]!
   "Price of non-base token in terms of the base token"
   priceTokenInBase: BigDecimal!
   "Price of base token in USD"
   priceBaseInUSD: BigDecimal!
+}
+
+type _PoolQueue @entity {
+  id: ID!
+  addresses: [String!]!
+  startBlocks: [BigInt!]!
 }
 
 type _FastSync @entity {

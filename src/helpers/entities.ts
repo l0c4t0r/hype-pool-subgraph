@@ -1,10 +1,4 @@
-import {
-  Address,
-  BigInt,
-  Bytes,
-  dataSource,
-  log,
-} from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, dataSource } from "@graphprotocol/graph-ts";
 import { Hypervisor as HypervisorContract } from "../../generated/HypeRegistry/Hypervisor";
 import {
   FeeCollectionSnapshot,
@@ -19,6 +13,7 @@ import {
   Token,
   _FastSync,
   _PoolPricing,
+  _PoolQueue,
 } from "../../generated/schema";
 import {
   ADDRESS_ZERO,
@@ -87,7 +82,10 @@ export function getOrCreateProtocol(): Protocol {
   return protocol;
 }
 
-export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
+export function getOrCreateHypervisor(
+  hypervisorAddress: Address,
+  blockNumber: BigInt | null = null
+): Hypervisor {
   let hypervisor = Hypervisor.load(hypervisorAddress);
 
   if (!hypervisor) {
@@ -95,7 +93,7 @@ export function getOrCreateHypervisor(hypervisorAddress: Address): Hypervisor {
     const hypervisorContract = HypervisorContract.bind(hypervisorAddress);
     hypervisor.symbol = hypervisorContract.symbol();
     const poolAddress = hypervisorContract.pool();
-    const pool = getOrCreatePool(poolAddress);
+    const pool = getOrCreatePool(poolAddress, blockNumber);
     hypervisor.pool = pool.id;
 
     const feeCall = hypervisorContract.try_fee();
@@ -173,7 +171,10 @@ export function getOrCreateHypervisorPosition(
   return position;
 }
 
-export function getOrCreatePool(poolAddress: Address): Pool {
+export function getOrCreatePool(
+  poolAddress: Address,
+  blockNumber: BigInt | null = null
+): Pool {
   let pool = Pool.load(poolAddress);
   if (!pool) {
     pool = createUniswapV3Pool(poolAddress);
@@ -195,11 +196,15 @@ export function getOrCreatePool(poolAddress: Address): Pool {
       pool._previousFeeGrowthGlobal1X128 = ZERO_BI;
       pool.save();
 
-      getOrCreatePoolPricing(
-        poolAddress,
-        Address.fromBytes(pool.token0),
-        Address.fromBytes(pool.token1)
-      );
+      // only create pool pricing if block number is available
+      if (blockNumber) {
+        getOrCreatePoolPricing(
+          poolAddress,
+          Address.fromBytes(pool.token0),
+          Address.fromBytes(pool.token1),
+          blockNumber
+        );
+      }
     }
   }
 
@@ -423,7 +428,8 @@ export function getOrCreateTickSnapshot(
 export function getOrCreatePoolPricing(
   poolAddress: Address,
   token0Address: Address,
-  token1Address: Address
+  token1Address: Address,
+  blockNumber: BigInt
 ): _PoolPricing {
   let pricing = _PoolPricing.load(poolAddress);
 
@@ -449,33 +455,49 @@ export function getOrCreatePoolPricing(
       pricing.baseTokenIndex = 0;
       pricing.usdPath = token0Lookup.path;
       pricing.usdPathIndex = token0Lookup.pathIdx;
+      pricing.usdPathStartBlock = token0Lookup.pathStartBlock;
     } else if (token1Lookup.priority > token0Lookup.priority) {
       // token1 is the base token
       pricing.baseToken = token1Address;
       pricing.baseTokenIndex = 1;
       pricing.usdPath = token1Lookup.path;
       pricing.usdPathIndex = token1Lookup.pathIdx;
+      pricing.usdPathStartBlock = token1Lookup.pathStartBlock;
     } else {
       // This means token0 == token1 == -1, unidentified base token
       pricing.baseToken = Bytes.fromHexString(ADDRESS_ZERO);
       pricing.baseTokenIndex = -1;
       pricing.usdPath = [ADDRESS_ZERO];
       pricing.usdPathIndex = [-1];
+      pricing.usdPathStartBlock = [-1];
     }
     pricing.priceTokenInBase = ZERO_BD;
     pricing.priceBaseInUSD = ZERO_BD;
     pricing.save();
 
+    const queue = getOrCreatePoolQueue();
+    const queueAddresses = queue.addresses;
+    const queueStartBlocks = queue.startBlocks;
+
     for (let i = 0; i < pricing.usdPath.length; i++) {
       if (pricing.usdPath[i] != ADDRESS_ZERO) {
-        let pathPoolAddress = Address.fromString(pricing.usdPath[i]);
-        let pool = Pool.load(pathPoolAddress);
-        if (!pool) {
-          pool = getOrCreatePool(pathPoolAddress);
-          triagePoolForFastSync(pathPoolAddress);
+        if (blockNumber >= BigInt.fromI32(pricing.usdPathStartBlock[i])) {
+          let pathPoolAddress = Address.fromString(pricing.usdPath[i]);
+          let pool = Pool.load(pathPoolAddress);
+          if (!pool) {
+            pool = getOrCreatePool(pathPoolAddress, blockNumber);
+            triagePoolForFastSync(pathPoolAddress);
+          }
+        } else {
+          // Add pool to queue to be created
+          queueAddresses.push(pricing.usdPath[i]);
+          queueStartBlocks.push(BigInt.fromI32(pricing.usdPathStartBlock[i]));
         }
       }
     }
+    queue.addresses = queueAddresses;
+    queue.startBlocks = queueStartBlocks;
+    queue.save();
   }
   return pricing;
 }
@@ -491,4 +513,15 @@ export function getOrCreateFastSync(): _FastSync {
     fastSync.save();
   }
   return fastSync;
+}
+
+export function getOrCreatePoolQueue(): _PoolQueue {
+  let queue = _PoolQueue.load("0");
+  if (!queue) {
+    queue = new _PoolQueue("0");
+    queue.addresses = [];
+    queue.startBlocks = [];
+    queue.save();
+  }
+  return queue;
 }

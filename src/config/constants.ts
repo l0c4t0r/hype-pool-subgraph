@@ -104,7 +104,6 @@ export class constantAddresses {
   static linea(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
     lookup.set("USDC", "0x176211869ca2b568f2a7d4ee941e073a821ee1ff");
-    lookup.set("BUSD_LINEA", "0x7d43aabc515c356145049227cee54b608342c0ad");
 
     return lookup as TypedMap<string, string>;
   }

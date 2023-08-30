@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { Token, _PoolPricing } from "../../generated/schema";
+import { Pool, Token, _PoolPricing } from "../../generated/schema";
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../config/constants";
 import { getOrCreatePool } from "./entities";
 import { isUSDC } from "./token";
@@ -8,23 +8,25 @@ export function getExchangeRate(
   poolAddress: Address,
   baseTokenIndex: i32
 ): BigDecimal {
-  // Get ratios to convert token0 to token1 and vice versa
-  const pool = getOrCreatePool(poolAddress);
-  const sqrtPriceX96 = pool.sqrtPriceX96;
-  const num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal();
-  const Q192_BI = BigInt.fromI32(2).pow(192);
-  const denom = new BigDecimal(Q192_BI);
-
-  const token0 = Token.load(pool.token0)!
-  const token1 = Token.load(pool.token1)!
-
-  const decimal_factor = exponentToBigDecimal(token1.decimals - token0.decimals)
-
   let price = ZERO_BD;
-  if (baseTokenIndex == 0 && num > ZERO_BD) {
-    price = denom.times(decimal_factor).div(num); // This is rate of token1 in token0
-  } else if (baseTokenIndex == 1) {
-    price = num.div(denom).div(decimal_factor); // This is rate of token0 in token1
+  // Get ratios to convert token0 to token1 and vice versa
+  const pool = Pool.load(poolAddress)
+  if (pool) {
+    const sqrtPriceX96 = pool.sqrtPriceX96;
+    const num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal();
+    const Q192_BI = BigInt.fromI32(2).pow(192);
+    const denom = new BigDecimal(Q192_BI);
+
+    const token0 = Token.load(pool.token0)!
+    const token1 = Token.load(pool.token1)!
+
+    const decimal_factor = exponentToBigDecimal(token1.decimals - token0.decimals)
+
+    if (baseTokenIndex == 0 && num > ZERO_BD) {
+      price = denom.times(decimal_factor).div(num); // This is rate of token1 in token0
+    } else if (baseTokenIndex == 1) {
+      price = num.div(denom).div(decimal_factor); // This is rate of token0 in token1
+    }
   }
   return price;
 }

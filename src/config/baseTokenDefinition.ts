@@ -213,6 +213,8 @@ export class BaseTokenDefinition {
     const WSTETH = "0x5979d7b546e38e414f7e9822514be443a4800529";
     const MAI = "0x3f56e0c36d275367b8c502090edf38289b3dea0d";
     const ARB = "0x912ce59144191c1204e64559fe8253a0e49e6548";
+    const ERN = "0xa334884bf6b0a066d553d19e507315e839409e62"
+    const stERN = "0xf7a0dd3317535ec4f4d29adf9d620b3d8d5d5069"
 
     const WBTC_USDC = "0xa62ad78825e3a55a77823f00fe0050f567c1e4ee";
     const USDC_WETH = "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d";
@@ -223,72 +225,86 @@ export class BaseTokenDefinition {
     const WSTETH_USDC = "0x3ca631bbef7daf9dbb4d3f57a2de9038e7442b39";
     const MAI_USDC = "0x298130471f14e9e6c6c607be648feaabc1fa48a6";
     const ARB_USDC = "0xcda53b1f66614552f834ceef361a8d12a0b8dad8";
+    const ERN_USDT = "0x4c5ca4d3ba53de6ab7efbc9ae692889e216ef5d4"
+    const ERN_stERN = "0x9b873cef94f98c558af111c514cc69f00ad4c0f0"
 
     let lookup = new TypedMap<string, BasePool>();
     lookup.set(USDC, {
       pathIdx: [-1],
       path: [ADDRESS_ZERO],
       pathStartBlock: [0],
-      priority: 10,
+      priority: 12,
     });
     lookup.set(USDCe, {
       pathIdx: [-1],
       path: [ADDRESS_ZERO],
       pathStartBlock: [0],
-      priority: 9,
+      priority: 11,
     });
     lookup.set(USDT, {
       pathIdx: [1],
       path: [USDC_USDT],
       pathStartBlock: [0],
-      priority: 8,
+      priority: 10,
     });
     lookup.set(DAI, {
       pathIdx: [1],
       path: [DAI_USDC],
       pathStartBlock: [0],
-      priority: 7,
+      priority: 9,
     });
     lookup.set(WETH, {
       pathIdx: [1],
       path: [USDC_WETH],
       pathStartBlock: [0],
-      priority: 6,
+      priority: 8,
     });
     lookup.set(WBTC, {
       pathIdx: [1],
       path: [WBTC_USDC],
       pathStartBlock: [0],
-      priority: 5,
+      priority: 7,
     });
     lookup.set(LUSD, {
       pathIdx: [1],
       path: [LUSD_USDC],
       pathStartBlock: [0],
-      priority: 4,
+      priority: 6,
     });
     lookup.set(FRAX, {
       pathIdx: [1],
       path: [FRAX_USDC],
       pathStartBlock: [0],
-      priority: 3,
+      priority: 5,
     });
     lookup.set(WSTETH, {
       pathIdx: [1],
       path: [WSTETH_USDC],
       pathStartBlock: [0],
-      priority: 2,
+      priority: 4,
     });
     lookup.set(MAI, {
       pathIdx: [1],
       path: [MAI_USDC],
       pathStartBlock: [0],
-      priority: 1,
+      priority: 3,
     });
     lookup.set(ARB, {
       pathIdx: [1],
       path: [ARB_USDC],
       pathStartBlock: [0],
+      priority: 2,
+    });
+    lookup.set(ERN, {
+      pathIdx: [1, 0],
+      path: [ERN_USDT, USDC_USDT],
+      pathStartBlock: [103546734, 0],
+      priority: 1,
+    });
+    lookup.set(stERN, {
+      pathIdx: [0, 1, 0],
+      path: [ERN_stERN, ERN_USDT, USDC_USDT],
+      pathStartBlock: [122464362, 103546734, 0],
       priority: 0,
     });
 

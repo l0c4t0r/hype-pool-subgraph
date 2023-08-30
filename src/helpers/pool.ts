@@ -1,9 +1,10 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { _PoolPricing } from "../../generated/schema";
-import { getOrCreatePool, getOrCreateProtocol } from "./entities";
+import { getOrCreatePool, getOrCreatePoolQueue, getOrCreateProtocol } from "./entities";
 import { updateTvl } from "./hypervisor";
 import { getBaseTokenRateInUSDC, getExchangeRate } from "./pricing";
 import { updateTokenPrice } from "./token";
+import { Pool as PoolTemplate } from "../../generated/templates"
 
 const hypervisorUpdateIntervalSeconds = BigInt.fromI32(600);
 
@@ -35,24 +36,26 @@ export function updatePoolPricing(
   pool.sqrtPriceX96 = sqrtPriceX96;
   pool.save();
 
-  const pricing = _PoolPricing.load(poolAddress)!;
-  const price = getExchangeRate(poolAddress, pricing.baseTokenIndex);
-  const baseTokenInUSDC = getBaseTokenRateInUSDC(poolAddress);
+  const pricing = _PoolPricing.load(poolAddress);
+  if (pricing) {
+    const price = getExchangeRate(poolAddress, pricing.baseTokenIndex);
+    const baseTokenInUSDC = getBaseTokenRateInUSDC(poolAddress);
 
-  pricing.priceTokenInBase = price;
-  pricing.priceBaseInUSD = baseTokenInUSDC;
-  pricing.save();
+    pricing.priceTokenInBase = price;
+    pricing.priceBaseInUSD = baseTokenInUSDC;
+    pricing.save();
 
-  // Also update prices on token
-  const token0Address = Address.fromBytes(pool.token0);
-  const token1Address = Address.fromBytes(pool.token1);
+    // Also update prices on token
+    const token0Address = Address.fromBytes(pool.token0);
+    const token1Address = Address.fromBytes(pool.token1);
 
-  if (pricing.baseTokenIndex == 0) {
-    updateTokenPrice(token0Address, baseTokenInUSDC, block);
-    updateTokenPrice(token1Address, baseTokenInUSDC.times(price), block);
-  } else if (pricing.baseTokenIndex == 1) {
-    updateTokenPrice(token0Address, baseTokenInUSDC.times(price), block);
-    updateTokenPrice(token1Address, baseTokenInUSDC, block);
+    if (pricing.baseTokenIndex == 0) {
+      updateTokenPrice(token0Address, baseTokenInUSDC, block);
+      updateTokenPrice(token1Address, baseTokenInUSDC.times(price), block);
+    } else if (pricing.baseTokenIndex == 1) {
+      updateTokenPrice(token0Address, baseTokenInUSDC.times(price), block);
+      updateTokenPrice(token1Address, baseTokenInUSDC, block);
+    }
   }
 }
 
@@ -99,4 +102,25 @@ export function poolMatchesUnderlyingProtocol(poolAddress: Address): boolean {
   const protocol = getOrCreateProtocol();
   const pool = getOrCreatePool(poolAddress);
   return pool._protocol == protocol.underlyingProtocol;
+}
+
+export function processPoolQueue(blockNumber: BigInt): void {
+  const queue = getOrCreatePoolQueue();
+
+  const newAddresses: string[] = [];
+  const newStartBlocks: BigInt[] = [];
+  for (let i = 0; i < queue.addresses.length; i++) {
+    if (blockNumber >= queue.startBlocks[i]) {
+      const poolAddress = Address.fromString(queue.addresses[i]);
+      const pool = getOrCreatePool(poolAddress);
+      pool.save();
+      PoolTemplate.create(poolAddress);
+    } else {
+      newAddresses.push(queue.addresses[i]);
+      newStartBlocks.push(queue.startBlocks[i]);
+    }
+  }
+  queue.addresses = newAddresses;
+  queue.startBlocks = newStartBlocks;
+  queue.save();
 }

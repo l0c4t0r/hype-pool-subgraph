@@ -57,7 +57,7 @@ export function handleDeposit(event: Deposit): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
-  initFastSyncPools(event.address, event.block);
+  initFastSyncPools(event.block);
 }
 export function handleWithdraw(event: Withdraw): void {
   const protocol = getOrCreateProtocol()
@@ -91,7 +91,7 @@ export function handleWithdraw(event: Withdraw): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, false);
-  initFastSyncPools(event.address, event.block);
+  initFastSyncPools(event.block);
 }
 export function handleRebalance(event: Rebalance): void {
   const protocol = getOrCreateProtocol();
@@ -128,7 +128,7 @@ export function handleRebalance(event: Rebalance): void {
     false
   );
   updateSnapshotCurrentBlock(event.address, event.block.number, true);
-  initFastSyncPools(event.address, event.block);
+  initFastSyncPools(event.block);
 }
 
 export function handleZeroBurn(event: ZeroBurn): void {
