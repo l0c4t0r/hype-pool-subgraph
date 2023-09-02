@@ -83,3 +83,7 @@ protocolLookup.set("base:0x1e86a593e55215957c4755f1be19a229af3286f6", {
   name: "synthswap",
   underlyingProtocol: PROTOCOL_ALGEBRA_V1,
 });
+protocolLookup.set("syscoin:0x683292172e2175bd08e3927a5e72fc301b161300", {
+  name: "pegasys",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});

@@ -16,7 +16,7 @@ enum Network {
   fantom
   moonbeam
   mantle
-  rollux
+  syscoin
   linea
   base
 }
