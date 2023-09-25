@@ -11,6 +11,10 @@ class protocolInfo {
 }
 
 export const protocolLookup = new TypedMap<string, protocolInfo>();
+protocolLookup.set("matic:0x5ca313118358e3f5efe0c49f239b66c964f9aef0", {
+  name: "quickswap",
+  underlyingProtocol: PROTOCOL_ALGEBRA_V1,
+});
 protocolLookup.set("matic:0xaec731f69fa39ad84c7749e913e3bc227427adfd", {
   name: "quickswap",
   underlyingProtocol: PROTOCOL_ALGEBRA_V1,
@@ -44,15 +48,15 @@ protocolLookup.set("polygon:0xcac19d43c9558753d7535978a370055614ce832e", {
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
 protocolLookup.set("fantom:0xf874d4957861e193aec9937223062679c14f9aca", {
-  name: "Spiritswap",
+  name: "spiritswap",
   underlyingProtocol: PROTOCOL_ALGEBRA_V2,
 });
 protocolLookup.set("moonbeam:0x6002d7714e8038f2058e8162b0b86c0b19c31908", {
-  name: "Stellaswap",
+  name: "stellaswap",
   underlyingProtocol: PROTOCOL_ALGEBRA_V1,
 });
 protocolLookup.set("moonbeam:0xb7dfc304d9cd88d98a262ce5b6a39bb9d6611063", {
-  name: "Beamswap",
+  name: "beamswap",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
 protocolLookup.set("matic:0x97686103b3e7238ca6c2c439146b30adbd84a593", {
@@ -60,6 +64,10 @@ protocolLookup.set("matic:0x97686103b3e7238ca6c2c439146b30adbd84a593", {
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
 protocolLookup.set("arbitrum-one:0x0f867f14b39a5892a39841a03ba573426de4b1d0", {
+  name: "sushi",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
+protocolLookup.set("base:0x6d5c54f535b073b9c2206baf721af2856e5cd683", {
   name: "sushi",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
@@ -85,5 +93,9 @@ protocolLookup.set("base:0x1e86a593e55215957c4755f1be19a229af3286f6", {
 });
 protocolLookup.set("syscoin:0x683292172e2175bd08e3927a5e72fc301b161300", {
   name: "pegasys",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
+protocolLookup.set("base:0xb24dc81f8be7284c76c7cf865b803807b3c2ef55", {
+  name: "basex",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
