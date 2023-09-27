@@ -1,0 +1,10 @@
+{
+  "network": "moonbeam",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x688cb9492bd2c72016f1765d813b2d713aa1f4c7",
+      "startBlock": 4485966
+    }
+  ]
+}
