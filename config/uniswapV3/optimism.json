@@ -1,9 +1,5 @@
 {
   "network": "optimism",
-  "graft" : [{
-    "base": "QmTQskFGPYntgXMnAMqQXGgpMuzyXVb2DX5HKmtV8GAjS5",
-    "block": 96164063
-  }],
   "hypeRegistry": [
     {
       "name": "HypeRegistry",

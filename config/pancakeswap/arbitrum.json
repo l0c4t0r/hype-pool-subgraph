@@ -1,0 +1,10 @@
+{
+  "network": "arbitrum-one",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x166cD995F9301590e381c488FFD4f18C3ca38A27",
+      "startBlock": 144400180
+    }
+  ]
+}
