@@ -111,4 +111,7 @@ protocolLookup.set("arbitrum-one:0x166cd995f9301590e381c488ffd4f18c3ca38a27", {
   name: "pancakeswap",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
-
+protocolLookup.set("manta-pacific-mainnet:0x683292172e2175bd08e3927a5e72fc301b161300", {
+  name: "aperture",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
