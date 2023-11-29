@@ -1,0 +1,10 @@
+{
+  "network": "manta-pacific-mainnet",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x8a9570ec97534277Ade6e46d100939FbCE4968f0",
+      "startBlock": 689622
+    }
+  ]
+}
