@@ -880,7 +880,7 @@ export class BaseTokenDefinition {
   static kava(): TypedMap<string, BasePool> {
     const USDC = "0xeb466342c4d449bc9f53a865d5cb90586f405215";
     const USDT = "0x919c1c267bc06a7039e03fcc2ef738525769109c";
-  
+
     const USDT_USDC = "0x4a18f16b6a4f695639b0d1390263def2e91fc60f";
 
     let lookup = new TypedMap<string, BasePool>();
@@ -919,6 +919,20 @@ export class BaseTokenDefinition {
 
     let lookup = new TypedMap<string, BasePool>();
     lookup.set(USDC, {
+      pathIdx: [-1],
+      path: [ADDRESS_ZERO],
+      pathStartBlock: [0],
+      priority: 1,
+    });
+
+    return lookup as TypedMap<string, BasePool>;
+  }
+
+  static opbnb(): TypedMap<string, BasePool> {
+    const USDT = "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3";
+
+    let lookup = new TypedMap<string, BasePool>();
+    lookup.set(USDT, {
       pathIdx: [-1],
       path: [ADDRESS_ZERO],
       pathStartBlock: [0],
@@ -974,6 +988,8 @@ export class BaseTokenDefinition {
       mapping = this.metis();
     } else if (network == "manta") {
       mapping = this.manta();
+    } else if (network == "opbnb") {
+      mapping = this.opbnb();
     }
 
     return mapping as TypedMap<string, BasePool>;
