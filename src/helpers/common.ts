@@ -59,7 +59,7 @@ export function updateProtocolFeeGrowthOutside(
     feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
     feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
   } else {
-    if (protocol.dex == "ramses") {
+    if (protocol.dex == "ramses" || protocol.dex == "pharaoh") {
       const ramsesPoolContract = RamsesV2PoolContract.bind(poolAddress);
       const tickInfo = ramsesPoolContract.ticks(tickIdx);
       feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();

@@ -144,7 +144,7 @@ function updateHypervisorPositionRanges(
       newTickUpper
     );
   } else {
-    if (protocol.dex == "ramses") {
+    if (protocol.dex == "ramses" || protocol.dex == "pharaoh") {
       position.key = ramsesPositionKey(
         hypervisorAddress,
         newTickLower,
