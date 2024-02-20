@@ -1,12 +1,12 @@
 import { Address, ethereum } from "@graphprotocol/graph-ts";
-import { Pool as PoolTemplate } from "../../generated/templates";
 import { fullRefresh } from "./common";
 import { FAST_SYNC } from "../config/fastSync";
 import { getOrCreateFastSync, getOrCreatePool } from "./entities";
+import { poolTemplateCreate } from "./pool";
 
 export function triagePoolForFastSync(poolAddress: Address): void {
   if (!FAST_SYNC) {
-    PoolTemplate.create(poolAddress);
+    poolTemplateCreate(poolAddress);
     return;
   }
   const fastSync = getOrCreateFastSync();
@@ -20,13 +20,11 @@ export function triagePoolForFastSync(poolAddress: Address): void {
       fastSync.save();
     }
   } else {
-    PoolTemplate.create(poolAddress);
+    poolTemplateCreate(poolAddress);
   }
 }
 
-export function initFastSyncPools(
-  block: ethereum.Block
-): void {
+export function initFastSyncPools(block: ethereum.Block): void {
   if (!FAST_SYNC) {
     return;
   }
@@ -38,7 +36,7 @@ export function initFastSyncPools(
   ) {
     for (let i = 0; i < fastSync.pools.length; i++) {
       const poolAddress = Address.fromString(fastSync.pools[i]);
-      PoolTemplate.create(poolAddress);
+      poolTemplateCreate(poolAddress);
       const pool = getOrCreatePool(poolAddress, block.number);
       for (let j = 0; j < pool._hypervisors.length; j++) {
         fullRefresh(Address.fromString(pool._hypervisors[j]), block);

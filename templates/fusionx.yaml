@@ -126,6 +126,43 @@ templates:
           handler: handleSwap
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash
+  - name: AlternatePool
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: Pool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/handlers/fusionx/pool.ts
+      entities:
+        - Pool
+        - Tick
+      abis:
+        - name: Hypervisor
+          file: ./abis/Hypervisor.json
+        - name: Pool
+          file: ./abis/UniswapV3Pool.json
+        - name: UniswapV3Pool
+          file: ./abis/UniswapV3Pool.json
+        - name: AlgebraV1Pool
+          file: ./abis/AlgebraV1Pool.json
+        - name: AlgebraV2Pool
+          file: ./abis/AlgebraV2Pool.json
+        - name: CamelotPool
+          file: ./abis/AlgebraV1CamelotPool.json
+        - name: RamsesV2Pool
+          file: ./abis/RamsesV2Pool.json
+      eventHandlers:
+        - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleBurn
+        - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
+          handler: handleSwap
+        - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleFlash
   - name: Token
     kind: ethereum/contract
     network: {{network}}

@@ -1,10 +1,17 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { _PoolPricing } from "../../generated/schema";
-import { getOrCreatePool, getOrCreatePoolQueue, getOrCreateProtocol } from "./entities";
+import {
+  getOrCreatePool,
+  getOrCreatePoolQueue,
+  getOrCreateProtocol,
+} from "./entities";
 import { updateTvl } from "./hypervisor";
 import { getBaseTokenRateInUSDC, getExchangeRate } from "./pricing";
 import { updateTokenPrice } from "./token";
-import { Pool as PoolTemplate } from "../../generated/templates"
+import {
+  Pool as PoolTemplate,
+  AlternatePool as AlternatePoolTemplate,
+} from "../../generated/templates";
 
 const hypervisorUpdateIntervalSeconds = BigInt.fromI32(600);
 
@@ -114,7 +121,7 @@ export function processPoolQueue(blockNumber: BigInt): void {
       const poolAddress = Address.fromString(queue.addresses[i]);
       const pool = getOrCreatePool(poolAddress);
       pool.save();
-      PoolTemplate.create(poolAddress);
+      poolTemplateCreate(poolAddress);
     } else {
       newAddresses.push(queue.addresses[i]);
       newStartBlocks.push(queue.startBlocks[i]);
@@ -123,4 +130,9 @@ export function processPoolQueue(blockNumber: BigInt): void {
   queue.addresses = newAddresses;
   queue.startBlocks = newStartBlocks;
   queue.save();
+}
+
+export function poolTemplateCreate(poolAddress: Address): void {
+  PoolTemplate.create(poolAddress);
+  AlternatePoolTemplate.create(poolAddress);
 }
