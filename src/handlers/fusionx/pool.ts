@@ -3,7 +3,7 @@ import {
   Flash,
   Mint,
   Swap,
-} from "../../../generated/templates/Pool/Pool";
+} from "../../../generated/templates/Pool/FusionxPool";
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";

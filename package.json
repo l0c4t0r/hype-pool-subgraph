@@ -66,7 +66,7 @@
     "deploy:ascent:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-ascent-polygon",
     "deploy:synthswap:base": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-synthswap-base",
     "deploy:fusionx:mantle": "graph deploy --node https://deploy.graphv3.fusionx.finance gamma-hp-fusionx-mantle",
-    "deploy:lynex:linea": "graph deploy --node https://graph-deploy.linea.build --ipfs https://graph-ipfs.linea.build gammastrategies/hype-pool-lynex-linea",
+    "deploy:lynex:linea": "graph deploy --studio  gamma-hp-lynex-linea",
     "deploy:pegasys:rollux": "graph deploy --node https://rollux.graph.pegasys.fi/deploy --ipfs https://rollux.ipfs.pegasys.fi/ gammastrategies/hype-pool-pegasys-rollux",
     "deploy:basex:base": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-basex-base",
     "deploy:pancakeswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-pancakeswap-arbitrum",
@@ -86,11 +86,11 @@
     "clean": "rimraf generated build"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.58.0",
-    "@graphprotocol/graph-ts": "^0.31.0"
+    "@graphprotocol/graph-cli": "^0.68.1",
+    "@graphprotocol/graph-ts": "^0.33.0"
   },
   "devDependencies": {
-    "matchstick-as": "^0.5.2",
+    "matchstick-as": "^0.6.0",
     "mustache": "^4.2.0"
   }
 }
