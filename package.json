@@ -34,6 +34,7 @@
     "prepare:aperture:manta": "mustache config/aperture/manta.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:hercules:metis": "mustache config/hercules/metis.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:quickswap:manta": "mustache config/quickswap/manta.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:quickswap:azke": "mustache config/quickswap/azke.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:baseswap:base": "mustache config/baseswap/base.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:swapbased:base": "mustache config/swapbased/base.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:pharaoh:avalanche": "mustache config/pharaoh/avalanche.json templates/uniswapV3.yaml > subgraph.yaml",
@@ -74,6 +75,7 @@
     "deploy:aperture:manta": "goldsky subgraph deploy gamma-hp-aperture-manta/{version} --path .",
     "deploy:hercules:metis": "graph deploy --node https://metisapi.0xgraph.xyz/deploy --ipfs https://metisapi.0xgraph.xyz/ipfs gamma-hp-hercules-metis",
     "deploy:quickswap:manta": "goldsky subgraph deploy gamma-hp-quickswap-manta/{version} --path .",
+    "deploy:quickswap:azke": "graph deploy --studio  gamma-hp-quickswap-azke",
     "deploy:baseswap:base": "graph deploy --studio  gamma-hp-baseswap-base",
     "deploy:swapbased:base": "graph deploy --studio  gamma-hp-swapbased-base",
     "deploy:pharaoh:avalanche": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/gamma-hp-pharaoh-avax",
@@ -88,7 +90,7 @@
     "clean": "rimraf generated build"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.68.1",
+    "@graphprotocol/graph-cli": "^0.68.5",
     "@graphprotocol/graph-ts": "^0.33.0"
   },
   "devDependencies": {

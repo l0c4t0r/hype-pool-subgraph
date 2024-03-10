@@ -145,7 +145,7 @@ export class constantAddresses {
 
   static opbnb(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
-    lookup.set("USDC", "0x0000000000000000000000000000000000000000");  // No USDC on opBNB
+    lookup.set("USDC", "0x0000000000000000000000000000000000000000"); // No USDC on opBNB
     lookup.set("USDT_OPBNB", "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3");
 
     return lookup as TypedMap<string, string>;
@@ -154,6 +154,13 @@ export class constantAddresses {
   static gnosis(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
     lookup.set("USDC", "0xddafbb505ad214d7b80b1f830fccc89b60fb7a83");
+
+    return lookup as TypedMap<string, string>;
+  }
+
+  static astarZkEvm(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035");
 
     return lookup as TypedMap<string, string>;
   }
@@ -198,6 +205,8 @@ export class constantAddresses {
       mapping = this.opbnb();
     } else if (network == "gnosis") {
       mapping = this.gnosis();
+    } else if (network == "azke") {
+      mapping = this.astarZkEvm();
     }
 
     return mapping as TypedMap<string, string>;
