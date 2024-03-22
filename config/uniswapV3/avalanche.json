@@ -1,0 +1,10 @@
+{
+  "network": "avalanche",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xbF145c5239B1327909f3e37CA0cF890d014105E2",
+      "startBlock": 43083367
+    }
+  ]
+}
