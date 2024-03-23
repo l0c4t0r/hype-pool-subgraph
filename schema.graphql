@@ -25,6 +25,8 @@ enum Network {
   metis
   gnosis
   azke
+  imtblzke
+  blast
 }
 
 enum HypervisorPositionType {
