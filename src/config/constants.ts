@@ -39,7 +39,8 @@ export class constantAddresses {
 
   static polygon(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
-    lookup.set("USDC", "0x2791bca1f2de4661ed88a30c99a7a9449aa84174");
+    lookup.set("USDCe", "0x2791bca1f2de4661ed88a30c99a7a9449aa84174");
+    lookup.set("USDC", "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359");
 
     return lookup as TypedMap<string, string>;
   }
