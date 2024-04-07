@@ -1,0 +1,10 @@
+{
+  "network": "blast-mainnet",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xF44cECB1CF40ee12303E85Eb8651263c01812EaD",
+      "startBlock": 1815717
+    }
+  ]
+}

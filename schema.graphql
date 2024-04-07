@@ -27,6 +27,7 @@ enum Network {
   azke
   imtblzke
   blast
+  scroll
 }
 
 enum HypervisorPositionType {

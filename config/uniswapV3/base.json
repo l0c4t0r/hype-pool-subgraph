@@ -1,0 +1,10 @@
+{
+  "network": "base",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x829432679F69DBd8b2575f006EC0129894a39D86",
+      "startBlock": 12465470
+    }
+  ]
+}
