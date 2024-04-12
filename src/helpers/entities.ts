@@ -54,34 +54,18 @@ export function getOrCreateProtocol(): Protocol {
     }
 
     let networkName = network;
-    if (network == "arbitrum-one") {
-      networkName = "arbitrum";
-    } else if (network == "polygon-zkevm") {
-      networkName = "pzke";
-    } else if (network == "astar-zkevm-mainnet") {
-      networkName = "azke";
-    } else if (network == "imtbl-zkevm") {
-      networkName = "imtblzke";
-    } else if (name == "fusionx") {
+    if (name == "fusionx") {
       networkName = "mantle";
-    } else if (network == "kava-evm") {
-      networkName = "kava";
-    } else if (network == "opbnb-mainnet") {
-      networkName = "opbnb"
-    } else if (network == "manta-pacific-mainnet") {
-      networkName = "manta"
-    } else if (network == "blast-mainnet") {
-      networkName = "blast"
-    }
+    } 
 
     protocol.name = "hypePool"
-      .concat("-")
+      .concat(":")
       .concat(name)
-      .concat("-")
+      .concat(":")
       .concat(underlyingProtocol)
-      .concat("-")
+      .concat(":")
       .concat(networkName)
-      .concat("-")
+      .concat(":")
       .concat(VERSION);
     protocol.dex = name;
     protocol.underlyingProtocol = underlyingProtocol;
