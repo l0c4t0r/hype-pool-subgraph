@@ -8,4 +8,4 @@ export const FAST_SYNC_BLOCK = ZERO_BI
 // export const FAST_SYNC_BLOCK = BigInt.fromString("75503559")  // Uniswap Optimism
 // export const FAST_SYNC_BLOCK = BigInt.fromString("54000000")  // Uniswap Polygon
 // export const FAST_SYNC_BLOCK = BigInt.fromString("39499913")  // Quickswap Polygon
-// export const FAST_SYNC_BLOCK = BigInt.fromString("188486050")
+// export const FAST_SYNC_BLOCK = BigInt.fromString("2926345")
