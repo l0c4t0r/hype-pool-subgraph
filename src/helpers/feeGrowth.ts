@@ -9,6 +9,7 @@ import {
   LIMIT_POSITION,
   PROTOCOL_ALGEBRA_V1,
   PROTOCOL_ALGEBRA_V2,
+  PROTOCOL_ALGEBRA_INTEGRAL,
 } from "../config/constants";
 import {
   getOrCreateHypervisor,
@@ -136,7 +137,8 @@ function updateHypervisorPositionRanges(
 
   if (
     protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V1 ||
-    protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2
+    protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2 ||
+    protocol.underlyingProtocol == PROTOCOL_ALGEBRA_INTEGRAL
   ) {
     position.key = algebraPositionKey(
       hypervisorAddress,
@@ -144,7 +146,7 @@ function updateHypervisorPositionRanges(
       newTickUpper
     );
   } else {
-    if (protocol.dex == "ramses" || protocol.dex == "pharaoh") {
+    if (protocol.dex == "ramses" || protocol.dex == "pharaoh" || protocol.dex == "nile") {
       position.key = ramsesPositionKey(
         hypervisorAddress,
         newTickLower,

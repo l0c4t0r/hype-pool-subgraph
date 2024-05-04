@@ -1,6 +1,7 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { AlgebraV1Pool as AlgebraV1PoolContract } from "../../generated/templates/Pool/AlgebraV1Pool";
 import { AlgebraV2Pool as AlgebraV2PoolContract } from "../../generated/templates/Pool/AlgebraV2Pool";
+import { AlgebraIntegralPool as AlgebraIntegralPoolContract } from "../../generated/templates/Pool/AlgebraIntegralPool";
 import { CamelotPool as CamelotPoolContract } from "../../generated/templates/Pool/CamelotPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
 import { RamsesV2Pool as RamsesV2PoolContract } from "../../generated/templates/Pool/RamsesV2Pool";
@@ -9,6 +10,7 @@ import {
   LIMIT_POSITION,
   PROTOCOL_ALGEBRA_V1,
   PROTOCOL_ALGEBRA_V2,
+  PROTOCOL_ALGEBRA_INTEGRAL,
 } from "../config/constants";
 import {
   getOrCreateHypervisor,
@@ -58,8 +60,17 @@ export function updateProtocolFeeGrowthOutside(
     const tickInfo = algebraPoolContract.ticks(tickIdx);
     feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
     feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
+  } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_INTEGRAL) {
+    const algebraPoolContract = AlgebraIntegralPoolContract.bind(poolAddress);
+    const tickInfo = algebraPoolContract.ticks(tickIdx);
+    feeGrowthOutside0X128 = tickInfo.getOuterFeeGrowth0Token();
+    feeGrowthOutside1X128 = tickInfo.getOuterFeeGrowth1Token();
   } else {
-    if (protocol.dex == "ramses" || protocol.dex == "pharaoh") {
+    if (
+      protocol.dex == "ramses" ||
+      protocol.dex == "pharaoh" ||
+      protocol.dex == "nile"
+    ) {
       const ramsesPoolContract = RamsesV2PoolContract.bind(poolAddress);
       const tickInfo = ramsesPoolContract.ticks(tickIdx);
       feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();
@@ -100,6 +111,10 @@ export function updateProtocolFeeGrowthGlobal(
     feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
   } else if (protocol == PROTOCOL_ALGEBRA_V2) {
     const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
+    feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();
+    feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
+  } else if (protocol == PROTOCOL_ALGEBRA_INTEGRAL) {
+    const algebraPoolContract = AlgebraIntegralPoolContract.bind(poolAddress);
     feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();
     feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
   } else {
@@ -163,6 +178,14 @@ export function updateProtocolPoolPositionFees(
     tokensOwed1 = position.getFees1();
     feeGrowthInside0X128 = position.getInnerFeeGrowth0Token();
     feeGrowthInside1X128 = position.getInnerFeeGrowth1Token();
+  } else if (protocol == PROTOCOL_ALGEBRA_INTEGRAL) {
+    const algebraPoolContract = AlgebraIntegralPoolContract.bind(poolAddress);
+    const position = algebraPoolContract.positions(hypervisorPosition.key!);
+    liquidity = position.getLiquidity();
+    tokensOwed0 = position.getFees0();
+    tokensOwed1 = position.getFees1();
+    feeGrowthInside0X128 = position.getInnerFeeGrowth0Token();
+    feeGrowthInside1X128 = position.getInnerFeeGrowth1Token();
   } else {
     const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
     const position = uniswapPoolContract.positions(hypervisorPosition.key!);
@@ -219,6 +242,11 @@ export function fullRefresh(
     price = globalState.getPrice();
   } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_V2) {
     const algebraPoolContract = AlgebraV2PoolContract.bind(poolAddress);
+    const globalState = algebraPoolContract.globalState();
+    tick = globalState.getTick();
+    price = globalState.getPrice();
+  } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_INTEGRAL) {
+    const algebraPoolContract = AlgebraIntegralPoolContract.bind(poolAddress);
     const globalState = algebraPoolContract.globalState();
     tick = globalState.getTick();
     price = globalState.getPrice();

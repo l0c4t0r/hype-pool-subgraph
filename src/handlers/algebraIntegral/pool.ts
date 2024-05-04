@@ -3,11 +3,11 @@ import {
   Flash,
   Mint,
   Swap,
-} from "../../../generated/templates/Pool/AlgebraV2Pool";
+} from "../../../generated/templates/Pool/AlgebraIntegralPool";
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
 import { processBurn, processMint, processSwap } from "../common/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
-import { PROTOCOL_ALGEBRA_V2 } from "../../config/constants";
+import { PROTOCOL_ALGEBRA_INTEGRAL } from "../../config/constants";
 import { getOrCreateProtocol } from "../../helpers/entities";
 
 export function handleMint(event: Mint): void {
@@ -46,6 +46,6 @@ export function handleFlash(event: Flash): void {
   updateProtocolFeeGrowthGlobal(
     event.address,
     event.block.number,
-    PROTOCOL_ALGEBRA_V2
+    PROTOCOL_ALGEBRA_INTEGRAL
   );
 }

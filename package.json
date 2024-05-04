@@ -32,7 +32,7 @@
     "prepare:sushi:arbitrum": "mustache config/sushi/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:sushi:base": "mustache config/sushi/base.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:ramses:arbitrum": "mustache config/ramses/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
-    "prepare:nile:linea": "mustache config/ramses/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:nile:linea": "mustache config/nile/linea.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:ascent:polygon": "mustache config/ascent/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:fusionx:mantle": "mustache config/fusionx/mantle.json templates/fusionx.yaml > subgraph.yaml",
     "prepare:lynex:linea": "mustache config/lynex/linea.json templates/algebraV1.yaml > subgraph.yaml",
@@ -53,6 +53,8 @@
     "prepare:cleopatra:mantle": "mustache config/cleopatra/mantle.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:blaster:blast": "mustache config/blaster/blast.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:thruster:blast": "mustache config/thruster/blast.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:quickswap:xlayer": "mustache config/quickswap/xlayer.json templates/algebraIntegral.yaml > subgraph.yaml",
+    "prepare:fenix:blast": "mustache config/fenix/blast.json templates/algebraIntegral.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
@@ -106,6 +108,8 @@
     "deploy:blaster:blast": "graph deploy --studio gamma-hp-blaster-blast",
     "deploy:thruster:blast": "graph deploy --studio gamma-hp-thruster-blast",
     "deploy:nile:linea": "graph deploy --studio gamma-hp-nile-linea",
+    "deploy:quickswap:xlayer": "graph deploy --studio gamma-hp-quickswap-xlayer",
+    "deploy:fenix:blast": "graph deploy --studio gamma-hp-fenix-blast",
     "deploy:lab": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/laboratory",
     "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
@@ -114,8 +118,8 @@
     "clean": "rimraf generated build"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.68.5",
-    "@graphprotocol/graph-ts": "^0.33.0"
+    "@graphprotocol/graph-cli": "^0.71.0",
+    "@graphprotocol/graph-ts": "^0.35.1"
   },
   "devDependencies": {
     "matchstick-as": "^0.6.0",

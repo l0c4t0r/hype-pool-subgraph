@@ -1,4 +1,6 @@
-specVersion: 0.0.5
+specVersion: 1.1.0
+indexerHints:
+  prune: {{prune}}
 features:
   - nonFatalErrors
 {{#graft}}
@@ -38,6 +40,8 @@ dataSources:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: RamsesV2Pool
           file: ./abis/RamsesV2Pool.json
         - name: ERC20
@@ -49,6 +53,8 @@ dataSources:
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
+        - event: HypeRemoved(address,uint256)
+          handler: handleHypeRemoved
       file: ./src/handlers/uniswapV3/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
@@ -76,6 +82,8 @@ templates:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: RamsesV2Pool
           file: ./abis/RamsesV2Pool.json
       eventHandlers:
@@ -113,6 +121,8 @@ templates:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: CamelotPool
           file: ./abis/AlgebraV1CamelotPool.json
         - name: RamsesV2Pool
@@ -152,6 +162,8 @@ templates:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: CamelotPool
           file: ./abis/AlgebraV1CamelotPool.json
         - name: RamsesV2Pool

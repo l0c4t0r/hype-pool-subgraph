@@ -1,9 +1,3 @@
-enum UnderlyingProtocol {
-  uniswapV3
-  algebraV1
-  algebraV2
-}
-
 enum HypervisorPositionType {
   base
   limit
@@ -27,7 +21,7 @@ type Protocol @entity(immutable: true) {
   "Name of DEX"
   dex: String!
   "Underlying infrastructure protocol"
-  underlyingProtocol: UnderlyingProtocol!
+  underlyingProtocol: String!
   "Network/chain"
   network: String!
   "Subgraph version"
@@ -57,6 +51,8 @@ type Hypervisor @entity {
   limitPosition: HypervisorPosition!
   "Fee snapshots"
   feeSnapshots: [FeeSnapshot!]! @derivedFrom(field: "hypervisor")
+  "Whether the hypervisor is active or not"
+  active: Boolean!
   "Last updated block for TVL fields"
   lastUpdatedBlock: BigInt!
   "Previous total supply of vault tokens before update"
@@ -134,7 +130,7 @@ type Pool @entity {
   "fee growth global of token 1 from before latest update"
   _previousFeeGrowthGlobal1X128: BigInt!
   "Flag for pools that need fee growth updated"
-  _protocol: UnderlyingProtocol!
+  _protocol: String!
 }
 
 type Tick @entity {

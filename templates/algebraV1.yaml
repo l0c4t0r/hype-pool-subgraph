@@ -1,4 +1,6 @@
-specVersion: 0.0.5
+specVersion: 1.1.0
+indexerHints:
+  prune: {{prune}}
 features:
   - nonFatalErrors
 {{#graft}}
@@ -40,6 +42,8 @@ dataSources:
           file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -49,6 +53,8 @@ dataSources:
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
+        - event: HypeRemoved(address,uint256)
+          handler: handleHypeRemoved
       file: ./src/handlers/algebraV1/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
@@ -78,6 +84,8 @@ templates:
           file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
       eventHandlers:
         - event: Rebalance(int24,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebalance
@@ -111,6 +119,8 @@ templates:
           file: ./abis/AlgebraV1CamelotPool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: RamsesV2Pool
           file: ./abis/RamsesV2Pool.json
         - name: FusionxPool
@@ -148,6 +158,8 @@ templates:
           file: ./abis/AlgebraV1Pool.json
         - name: AlgebraV2Pool
           file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
         - name: CamelotPool
           file: ./abis/AlgebraV1CamelotPool.json
         - name: RamsesV2Pool

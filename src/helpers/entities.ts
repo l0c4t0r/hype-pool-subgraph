@@ -29,7 +29,11 @@ import {
   ZERO_BI,
 } from "../config/constants";
 import { Token as TokenTemplate } from "../../generated/templates";
-import { createAlgebraV1Pool, createAlgebraV2Pool } from "./algebra";
+import {
+  createAlgebraV1Pool,
+  createAlgebraV2Pool,
+  createAlgebraIntegralPool,
+} from "./algebra";
 import { createUniswapV3Pool } from "./uniswapV3";
 import { protocolLookup } from "../config/lookups";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./token";
@@ -56,7 +60,7 @@ export function getOrCreateProtocol(): Protocol {
     let networkName = network;
     if (name == "fusionx") {
       networkName = "mantle";
-    } 
+    }
 
     protocol.name = "hypePool"
       .concat(":")
@@ -119,6 +123,7 @@ export function getOrCreateHypervisor(
     hypervisor.basePosition = basePosition.id;
     hypervisor.limitPosition = limitPosition.id;
     hypervisor.lastUpdatedBlock = ZERO_BI;
+    hypervisor.active = true;
     hypervisor._previousTotalSupply = ZERO_BI;
     hypervisor._previousTvl0 = ZERO_BI;
     hypervisor._previousTvl1 = ZERO_BI;
@@ -135,10 +140,7 @@ export function getOrCreateHypervisorPosition(
   hypervisorAddress: Address,
   positionType: string
 ): HypervisorPosition {
-  const id = hypervisorAddress
-    .toHex()
-    .concat("-")
-    .concat(positionType);
+  const id = hypervisorAddress.toHex().concat("-").concat(positionType);
 
   let position = HypervisorPosition.load(id);
 
@@ -176,6 +178,9 @@ export function getOrCreatePool(
       pool = createAlgebraV1Pool(poolAddress);
       if (!pool) {
         pool = createAlgebraV2Pool(poolAddress);
+        if (!pool) {
+          pool = createAlgebraIntegralPool(poolAddress);
+        }
       }
     }
 
@@ -206,10 +211,7 @@ export function getOrCreatePool(
 }
 
 export function getOrCreateTick(poolAddress: Address, tickIdx: i32): Tick {
-  const tickId = poolAddress
-    .toHex()
-    .concat("#")
-    .concat(tickIdx.toString());
+  const tickId = poolAddress.toHex().concat("#").concat(tickIdx.toString());
   let tick = Tick.load(tickId);
   if (!tick) {
     tick = new Tick(tickId);
@@ -260,10 +262,7 @@ export function createFeeSnapshot(
   block: BigInt,
   timestamp: BigInt
 ): FeeSnapshot {
-  const id = hypervisorAddress
-    .toHex()
-    .concat("-")
-    .concat(block.toString());
+  const id = hypervisorAddress.toHex().concat("-").concat(block.toString());
 
   const feeSnapshot = new FeeSnapshot(id);
   feeSnapshot.hypervisor = hypervisorAddress;

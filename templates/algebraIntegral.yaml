@@ -33,7 +33,7 @@ dataSources:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
         - name: Pool
-          file: ./abis/FusionxPool.json
+          file: ./abis/AlgebraIntegralPool.json
         - name: UniswapV3Pool
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraV1Pool
@@ -42,8 +42,6 @@ dataSources:
           file: ./abis/AlgebraV2Pool.json
         - name: AlgebraIntegralPool
           file: ./abis/AlgebraIntegralPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -55,7 +53,7 @@ dataSources:
           handler: handleHypeAdded
         - event: HypeRemoved(address,uint256)
           handler: handleHypeRemoved
-      file: ./src/handlers/uniswapV3/hypeRegistry.ts
+      file: ./src/handlers/algebraIntegral/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
   - name: Hypervisor
@@ -67,7 +65,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/handlers/uniswapV3/hypervisor.ts
+      file: ./src/handlers/algebraIntegral/hypervisor.ts
       entities:
         - Hypervisor
         - HypervisorPosition
@@ -75,7 +73,40 @@ templates:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
         - name: Pool
-          file: ./abis/FusionxPool.json
+          file: ./abis/AlgebraIntegralPool.json
+        - name: UniswapV3Pool
+          file: ./abis/UniswapV3Pool.json
+        - name: AlgebraV1Pool
+          file: ./abis/AlgebraV1Pool.json
+        - name: AlgebraV2Pool
+          file: ./abis/AlgebraV2Pool.json
+        - name: AlgebraIntegralPool
+          file: ./abis/AlgebraIntegralPool.json
+      eventHandlers:
+        - event: Rebalance(int24,uint256,uint256,uint256,uint256,uint256)
+          handler: handleRebalance
+        - event: ZeroBurn(uint8,uint256,uint256)
+          handler: handleZeroBurn
+        - event: SetFee(uint8)
+          handler: handleSetFee
+  - name: Pool
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: Pool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/handlers/algebraIntegral/pool.ts
+      entities:
+        - Pool
+        - Tick
+      abis:
+        - name: Hypervisor
+          file: ./abis/Hypervisor.json
+        - name: Pool
+          file: ./abis/AlgebraIntegralPool.json
         - name: UniswapV3Pool
           file: ./abis/UniswapV3Pool.json
         - name: AlgebraV1Pool
@@ -86,18 +117,18 @@ templates:
           file: ./abis/AlgebraIntegralPool.json
         - name: RamsesV2Pool
           file: ./abis/RamsesV2Pool.json
+        - name: FusionxPool
+          file: ./abis/UniswapV3Pool.json
       eventHandlers:
-        - event: Deposit(indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleDeposit
-        - event: Withdraw(indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleWithdraw
-        - event: Rebalance(int24,uint256,uint256,uint256,uint256,uint256)
-          handler: handleRebalance
-        - event: ZeroBurn(uint8,uint256,uint256)
-          handler: handleZeroBurn
-        - event: SetFee(uint8)
-          handler: handleSetFee
-  - name: Pool
+        - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleBurn
+        - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
+          handler: handleSwap
+        - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleFlash
+  - name: AlternatePool
     kind: ethereum/contract
     network: {{network}}
     source:
@@ -135,47 +166,6 @@ templates:
         - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleBurn
         - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24,uint128,uint128)
-          handler: handleSwap
-        - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
-          handler: handleFlash
-  - name: AlternatePool
-    kind: ethereum/contract
-    network: {{network}}
-    source:
-      abi: Pool
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/handlers/uniswapV3/pool.ts
-      entities:
-        - Pool
-        - Tick
-      abis:
-        - name: Hypervisor
-          file: ./abis/Hypervisor.json
-        - name: Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: UniswapV3Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: AlgebraV1Pool
-          file: ./abis/AlgebraV1Pool.json
-        - name: AlgebraV2Pool
-          file: ./abis/AlgebraV2Pool.json
-        - name: AlgebraIntegralPool
-          file: ./abis/AlgebraIntegralPool.json
-        - name: CamelotPool
-          file: ./abis/AlgebraV1CamelotPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
-        - name: FusionxPool
-          file: ./abis/UniswapV3Pool.json
-      eventHandlers:
-        - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
-          handler: handleMint
-        - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
-          handler: handleBurn
-        - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
           handler: handleSwap
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash

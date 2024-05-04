@@ -4,6 +4,7 @@ import { Hypervisor as HypervisorContract } from "../../../generated/templates/H
 import { Hypervisor as HypervisorTemplate } from "../../../generated/templates";
 import { AlgebraV1Pool as AlgebraV1PoolContract } from "../../../generated/templates/Pool/AlgebraV1Pool";
 import { AlgebraV2Pool as AlgebraV2PoolContract } from "../../../generated/templates/Pool/AlgebraV2Pool";
+import { AlgebraIntegralPool as AlgebraIntegralPoolContract } from "../../../generated/templates/Pool/AlgebraIntegralPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../../generated/templates/Pool/UniswapV3Pool";
 import {
   getOrCreateFastSync,
@@ -16,6 +17,7 @@ import { updateHypervisorList, updatePoolPricing } from "../../helpers/pool";
 import {
   PROTOCOL_ALGEBRA_V1,
   PROTOCOL_ALGEBRA_V2,
+  PROTOCOL_ALGEBRA_INTEGRAL
 } from "../../config/constants";
 import { triagePoolForFastSync } from "../../helpers/fastSync";
 
@@ -60,6 +62,18 @@ export function processHypeAdded(
         );
         return;
       }
+    } else if (protocol.underlyingProtocol == PROTOCOL_ALGEBRA_INTEGRAL) {
+      const algebraPoolContract = AlgebraIntegralPoolContract.bind(
+        hypervisorContract.pool()
+      );
+      const test_globalState = algebraPoolContract.try_globalState();
+      if (test_globalState.reverted) {
+        log.warning(
+          "Pool associated with {} does not appear to be a valid algebra integral pool",
+          [hypervisorAddress.toHex()]
+        );
+        return;
+      }
     } else {
       const uniswapPoolContract = UniswapPoolContract.bind(
         hypervisorContract.pool()
@@ -96,4 +110,12 @@ export function processHypeAdded(
     // Creates pool template if ready
     triagePoolForFastSync(poolAddress);
   }
+}
+
+export function processHypeRemoved(hypervisorAddress: Address): void {
+  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
+  hypervisor.active = false;
+  hypervisor.save();
+
+  log.info("Hypervisor removed: {}", [hypervisorAddress.toHex()]);
 }
