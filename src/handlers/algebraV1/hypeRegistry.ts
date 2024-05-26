@@ -11,5 +11,5 @@ export function handleHypeAdded(event: HypeAdded): void {
 }
 
 export function handleHypeRemoved(event: HypeRemoved): void {
-  processHypeRemoved(event.address);
+  processHypeRemoved(event.params.hype);
 }

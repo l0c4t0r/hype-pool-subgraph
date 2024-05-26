@@ -17,7 +17,7 @@ import { updateHypervisorList, updatePoolPricing } from "../../helpers/pool";
 import {
   PROTOCOL_ALGEBRA_V1,
   PROTOCOL_ALGEBRA_V2,
-  PROTOCOL_ALGEBRA_INTEGRAL
+  PROTOCOL_ALGEBRA_INTEGRAL,
 } from "../../config/constants";
 import { triagePoolForFastSync } from "../../helpers/fastSync";
 
@@ -97,11 +97,7 @@ export function processHypeAdded(
     updateHypervisorList(poolAddress, hypervisorAddress);
 
     // Initialize ranges as hype may be added to registry after a rebalance
-    updateHypervisorRanges(
-      hypervisorAddress,
-      block.number,
-      protocol
-    );
+    updateHypervisorRanges(hypervisorAddress, block.number, protocol);
 
     HypervisorTemplate.create(hypervisorAddress);
 
@@ -113,9 +109,14 @@ export function processHypeAdded(
 }
 
 export function processHypeRemoved(hypervisorAddress: Address): void {
-  const hypervisor = getOrCreateHypervisor(hypervisorAddress);
-  hypervisor.active = false;
-  hypervisor.save();
-
-  log.info("Hypervisor removed: {}", [hypervisorAddress.toHex()]);
+  const hypervisor = Hypervisor.load(hypervisorAddress);
+  if (hypervisor) {
+    hypervisor.active = false;
+    hypervisor.save();
+    log.info("Hypervisor removed: {}", [hypervisorAddress.toHex()]);
+  } else {
+    log.info("Attempted to remove hypervisor not on registry: {}", [
+      hypervisorAddress.toHex(),
+    ]);
+  }
 }

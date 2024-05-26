@@ -1,6 +1,6 @@
 {
   "network": "blast-mainnet",
-  "prune": "auto",
+  "prune": 2592000,
   "hypeRegistry": [
     {
       "name": "HypeRegistry",
