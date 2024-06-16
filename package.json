@@ -17,6 +17,7 @@
     "prepare:uniswap:mantle": "mustache config/uniswapV3/mantle.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:pzke": "mustache config/uniswapV3/pzke.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:manta": "mustache config/uniswapV3/manta.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:uniswap:rootstock": "mustache config/uniswapV3/rootstock.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:zyberswap:arbitrum": "mustache config/zyberswap/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:thena:bsc": "mustache config/thena/bsc.json templates/algebraV1.yaml > subgraph.yaml",
@@ -60,6 +61,7 @@
     "prepare:kim:mode": "mustache config/kim/mode.json templates/algebraIntegral.yaml > subgraph.yaml",
     "prepare:linehub:linea": "mustache config/linehub/linea.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:kinetix:base": "mustache config/kinetix/base.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:uniswap:taiko": "mustache config/uniswapV3/taiko.json templates/uniswapV3.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",
@@ -77,6 +79,7 @@
     "deploy:uniswap:pzke": "graph deploy --studio gamma-hp-uniswap-pzke",
     "deploy:uniswap:mantle": "graph deploy gamma-hp-uniswap-mantle --node https://subgraph-api.mantle.xyz/deploy --ipfs https://subgraph-api.mantle.xyz/ipfs",
     "deploy:uniswap:manta": "goldsky subgraph deploy gamma-hp-uniswap-manta/{version} --path .",
+    "deploy:uniswap:rootstock": "goldsky subgraph deploy gamma-hp-rootstock-manta/{version} --path .",
     "deploy:quickswap:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-quickswap-polygon",
     "deploy:zyberswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-zyberswap-arbitrum",
     "deploy:quickswap:pzke": "graph deploy --studio gamma-hp-quickswap-pzke",
@@ -128,7 +131,7 @@
     "clean": "rimraf generated build"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.71.0",
+    "@graphprotocol/graph-cli": "^0.74.1",
     "@graphprotocol/graph-ts": "^0.35.1"
   },
   "devDependencies": {
