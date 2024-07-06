@@ -18,6 +18,7 @@
     "prepare:uniswap:pzke": "mustache config/uniswapV3/pzke.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:manta": "mustache config/uniswapV3/manta.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:rootstock": "mustache config/uniswapV3/rootstock.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:uniswap:sei": "mustache config/uniswapV3/sei.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:quickswap:polygon": "mustache config/quickswap/polygon.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:zyberswap:arbitrum": "mustache config/zyberswap/arbitrum.json templates/algebraV1.yaml > subgraph.yaml",
     "prepare:thena:bsc": "mustache config/thena/bsc.json templates/algebraV1.yaml > subgraph.yaml",
@@ -33,6 +34,7 @@
     "prepare:sushi:polygon": "mustache config/sushi/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:sushi:arbitrum": "mustache config/sushi/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:sushi:base": "mustache config/sushi/base.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:sushi:rootstock": "mustache config/sushi/rootstock.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:ramses:arbitrum": "mustache config/ramses/arbitrum.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:nile:linea": "mustache config/nile/linea.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:ascent:polygon": "mustache config/ascent/polygon.json templates/uniswapV3.yaml > subgraph.yaml",
@@ -79,7 +81,8 @@
     "deploy:uniswap:pzke": "graph deploy --studio gamma-hp-uniswap-pzke",
     "deploy:uniswap:mantle": "graph deploy gamma-hp-uniswap-mantle --node https://subgraph-api.mantle.xyz/deploy --ipfs https://subgraph-api.mantle.xyz/ipfs",
     "deploy:uniswap:manta": "goldsky subgraph deploy gamma-hp-uniswap-manta/{version} --path .",
-    "deploy:uniswap:rootstock": "goldsky subgraph deploy gamma-hp-rootstock-manta/{version} --path .",
+    "deploy:uniswap:rootstock": "graph deploy --studio gamma-hp-uniswap-rootstock",
+    "deploy:uniswap:sei": "graph deploy --studio gamma-hp-uniswap-sei",
     "deploy:quickswap:polygon": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-quickswap-polygon",
     "deploy:zyberswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-zyberswap-arbitrum",
     "deploy:quickswap:pzke": "graph deploy --studio gamma-hp-quickswap-pzke",
@@ -123,15 +126,11 @@
     "deploy:kim:mode": "graph deploy --studio gamma-hp-kim-mode",
     "deploy:linehub:linea": "graph deploy --studio gamma-hp-linehub-linea",
     "deploy:kinetix:base": "graph deploy --studio gamma-hp-kinetix-base",
-    "deploy:lab": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/laboratory",
-    "create-local": "graph create --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
-    "remove-local": "graph remove --node http://localhost:8020/ l0c4t0r/hype-pool-uniswap-v3-arbitrum",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 l0c4t0r/hype-pool-uniswap-v3-arbitrum",
     "test": "graph test",
     "clean": "rimraf generated build"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.74.1",
+    "@graphprotocol/graph-cli": "^0.77.0",
     "@graphprotocol/graph-ts": "^0.35.1"
   },
   "devDependencies": {

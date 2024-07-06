@@ -206,6 +206,7 @@ export class constantAddresses {
   static rootstock(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
     lookup.set("USDC", "0x0000000000000000000000000000000000000000");
+    lookup.set("RUSDT", "0xef213441a85df4d7acbdae0cf78004e1e486bb96");
 
     return lookup as TypedMap<string, string>;
   }
@@ -213,6 +214,13 @@ export class constantAddresses {
   static taiko(): TypedMap<string, string> {
     let lookup = new TypedMap<string, string>();
     lookup.set("USDC", "0x07d83526730c7438048d55a4fc0b850e2aab6f0b");
+
+    return lookup as TypedMap<string, string>;
+  }
+
+  static sei(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0x3894085ef7ff0f0aedf52e2a2704928d1ec074f1");
 
     return lookup as TypedMap<string, string>;
   }
@@ -273,6 +281,8 @@ export class constantAddresses {
       mapping = this.rootstock();
     } else if (network == "taiko") {
       mapping = this.taiko();
+    } else if (network == "sei-mainnet") {
+      mapping = this.sei();
     }
 
     return mapping as TypedMap<string, string>;

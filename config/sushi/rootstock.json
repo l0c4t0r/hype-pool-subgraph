@@ -1,0 +1,12 @@
+{
+  "network": "rootstock",
+  "prune": 172800,
+  "subgraphTemplate": "uniV3",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xC27DDd78FC49875Fe6F844B72bbf31DFBB099881",
+      "startBlock": 6414350
+    }
+  ]
+}
