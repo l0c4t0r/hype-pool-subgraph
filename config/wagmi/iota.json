@@ -1,0 +1,11 @@
+{
+  "network": "iota",
+  "prune": 518400,
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xF44cECB1CF40ee12303E85Eb8651263c01812EaD",
+      "startBlock": 223591
+    }
+  ]
+}
