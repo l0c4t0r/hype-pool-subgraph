@@ -1,8 +1,4 @@
-import {
-  Address,
-  BigDecimal,
-  ethereum,
-} from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
 import { constantAddresses, DEFAULT_DECIMAL } from "../config/constants";
 import { StaticTokenDefinition } from "../config/staticTokenDefinition";
 import { ERC20 } from "../../generated/HypeRegistry/ERC20";
@@ -25,9 +21,8 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
         symbolValue = symbolResultBytes.value.toString();
       } else {
         // try with the static definition
-        let staticTokenDefinition = StaticTokenDefinition.fromAddress(
-          tokenAddress
-        );
+        let staticTokenDefinition =
+          StaticTokenDefinition.fromAddress(tokenAddress);
         if (staticTokenDefinition != null) {
           symbolValue = staticTokenDefinition.symbol;
         }
@@ -55,9 +50,8 @@ export function fetchTokenName(tokenAddress: Address): string {
         nameValue = nameResultBytes.value.toString();
       } else {
         // try with the static definition
-        let staticTokenDefinition = StaticTokenDefinition.fromAddress(
-          tokenAddress
-        );
+        let staticTokenDefinition =
+          StaticTokenDefinition.fromAddress(tokenAddress);
         if (staticTokenDefinition != null) {
           nameValue = staticTokenDefinition.name;
         }
@@ -96,7 +90,7 @@ export function isNullEthValue(value: string): boolean {
 }
 
 export function isUSDC(tokenAddress: Address): boolean {
-  const protocol = getOrCreateProtocol()
+  const protocol = getOrCreateProtocol();
   const addressLookup = constantAddresses.network(protocol.network);
   const usdcAddress = addressLookup.get("USDC");
   const usdceAddress = addressLookup.get("USDCe");
@@ -104,17 +98,18 @@ export function isUSDC(tokenAddress: Address): boolean {
   const usdtOpbnbAddress = addressLookup.get("USDT_OPBNB");
   const usdbAddress = addressLookup.get("USDB");
   const rusdtAddress = addressLookup.get("RUSDT");
-  const usdtIota = addressLookup.get("USDT")
+  const usdtIota = addressLookup.get("USDT");
+  const usdtXlayer = addressLookup.get("USDT_XLAYER");
 
   if (usdcAddress) {
     if (tokenAddress == Address.fromString(usdcAddress)) {
-      return true
+      return true;
     }
   }
 
   if (usdceAddress) {
-    if ( tokenAddress == Address.fromString(usdceAddress)) {
-      return true
+    if (tokenAddress == Address.fromString(usdceAddress)) {
+      return true;
     }
   }
 
@@ -148,7 +143,13 @@ export function isUSDC(tokenAddress: Address): boolean {
     }
   }
 
-  return false
+  if (usdtXlayer) {
+    if (tokenAddress == Address.fromString(usdtXlayer)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function updateTokenPrice(
