@@ -15,7 +15,7 @@ dataSources:
   {{#hypeRegistry}}
   - kind: ethereum
     name: {{name}}
-    network: {{network}}
+    network: "{{network}}"
     source:
       address: "{{address}}"
       abi: HypeRegistry
@@ -60,7 +60,7 @@ dataSources:
 templates:
   - name: Hypervisor
     kind: ethereum/contract
-    network: {{network}}
+    network: "{{network}}"
     source:
       abi: Hypervisor
     mapping:
@@ -99,7 +99,7 @@ templates:
           handler: handleSetFee
   - name: Pool
     kind: ethereum/contract
-    network: {{network}}
+    network: "{{network}}"
     source:
       abi: Pool
     mapping:
@@ -140,7 +140,7 @@ templates:
           handler: handleFlash
   - name: AlternatePool
     kind: ethereum/contract
-    network: {{network}}
+    network: "{{network}}"
     source:
       abi: Pool
     mapping:
@@ -181,7 +181,7 @@ templates:
           handler: handleFlash
   - name: Token
     kind: ethereum/contract
-    network: {{network}}
+    network: "{{network}}"
     source:
       abi: ERC20
     mapping:

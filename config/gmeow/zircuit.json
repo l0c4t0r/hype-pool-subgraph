@@ -1,0 +1,14 @@
+{
+  "network": "48900",
+  "subgraphTemplate": "uniswapV3",
+  "deploymentService": "sentio",
+  "deploymentName": "gamma-gmeow-zircuit",
+  "prune": 2592000,
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xC27DDd78FC49875Fe6F844B72bbf31DFBB099881",
+      "startBlock": 1216191
+    }
+  ]
+}

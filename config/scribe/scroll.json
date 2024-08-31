@@ -1,0 +1,14 @@
+{
+  "network": "scroll",
+  "subgraphTemplate": "algebraIntegral",
+  "deploymentService": "studio",
+  "deploymentName": "gamma-scribe-scroll",
+  "prune": 1728000,
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x0B79d5117dd22eDC1e5F2649aC32746aF7Ca3445",
+      "startBlock": 8111003
+    }
+  ]
+}

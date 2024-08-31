@@ -1421,6 +1421,20 @@ export class BaseTokenDefinition {
     return lookup as TypedMap<string, BasePool>;
   }
 
+  static zircuit(): TypedMap<string, BasePool> {
+    const USDC = "0x0000000000000000000000000000000000000000";
+
+    let lookup = new TypedMap<string, BasePool>();
+    lookup.set(USDC, {
+      pathIdx: [-1],
+      path: [ADDRESS_ZERO],
+      pathStartBlock: [0],
+      priority: 1,
+    });
+
+    return lookup as TypedMap<string, BasePool>;
+  }
+
   static nonBase(): BasePool {
     let lookup: BasePool = {
       path: [ADDRESS_ZERO],
@@ -1491,6 +1505,8 @@ export class BaseTokenDefinition {
       mapping = this.sei();
     } else if (network == "iota") {
       mapping = this.iota();
+    } else if (network == "48900") {
+      mapping = this.zircuit();
     }
 
     return mapping as TypedMap<string, BasePool>;

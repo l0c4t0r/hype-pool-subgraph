@@ -252,3 +252,15 @@ protocolLookup.set("iota:0xf44cecb1cf40ee12303e85eb8651263c01812ead", {
   name: "wagmi",
   underlyingProtocol: PROTOCOL_UNISWAP_V3,
 });
+protocolLookup.set("zircuit:0xc27ddd78fc49875fe6f844b72bbf31dfbb099881", {
+  name: "gmeow",
+  underlyingProtocol: PROTOCOL_UNISWAP_V3,
+});
+protocolLookup.set("zircuit:0x683292172e2175bd08e3927a5e72fc301b161300", {
+  name: "circuit",
+  underlyingProtocol: PROTOCOL_ALGEBRA_INTEGRAL,
+});
+protocolLookup.set("scroll:0x0b79d5117dd22edc1e5f2649ac32746af7ca3445", {
+  name: "scribe",
+  underlyingProtocol: PROTOCOL_ALGEBRA_INTEGRAL,
+});
