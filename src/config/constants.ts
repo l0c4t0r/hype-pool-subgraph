@@ -19,6 +19,7 @@ export const CURRENT_BLOCK = "current";
 export const ZERO_BI = BigInt.zero();
 export const ZERO_BD = BigDecimal.zero();
 export const ONE_BD = BigDecimal.fromString("1");
+export const Q256 = BigInt.fromI32(2).pow(256)
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 export const DEFAULT_DECIMAL = 18;
 

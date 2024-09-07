@@ -235,6 +235,10 @@ type PositionSnapshot @entity {
   tokensOwed0: BigInt!
   "Token 1 owed"
   tokensOwed1: BigInt!
+  "uncollected token 0 owed"
+  uncollected0: BigInt!
+  "Uncollected token 1 owed"
+  uncollected1: BigInt!
   "Fee growth inside of token 0"
   feeGrowthInside0X128: BigInt!
   "Fee growth inside of token 1"
