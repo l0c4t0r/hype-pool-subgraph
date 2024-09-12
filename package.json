@@ -64,6 +64,8 @@
     "prepare:linehub:linea": "mustache config/linehub/linea.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:kinetix:base": "mustache config/kinetix/base.json templates/uniswapV3.yaml > subgraph.yaml",
     "prepare:uniswap:taiko": "mustache config/uniswapV3/taiko.json templates/uniswapV3.yaml > subgraph.yaml",
+    "prepare:glyph:core": "mustache config/glyph/core.json templates/algebraIntegral.yaml > subgraph.yaml",
+    "prepare:corex:core": "mustache config/corex/core.json templates/uniswapV3.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:uniswap:arbitrum": "graph deploy --node https://api.thegraph.com/deploy/ l0c4t0r/hype-pool-uniswap-arbitrum",

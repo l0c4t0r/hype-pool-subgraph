@@ -379,6 +379,8 @@ export function getOrCreatePositionSnapshot(
     positionSnapshot.liquidity = ZERO_BI;
     positionSnapshot.tokensOwed0 = ZERO_BI;
     positionSnapshot.tokensOwed1 = ZERO_BI;
+    positionSnapshot.uncollected0 = ZERO_BI;
+    positionSnapshot.uncollected1 = ZERO_BI;
     positionSnapshot.feeGrowthInside0X128 = ZERO_BI;
     positionSnapshot.feeGrowthInside1X128 = ZERO_BI;
     positionSnapshot.save();

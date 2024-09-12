@@ -1,7 +1,7 @@
 {
   "network": "rootstock",
   "prune": 172800,
-  "subgraphTemplate": "uniV3",
+  "subgraphTemplate": "uniswapV3",
   "hypeRegistry": [
     {
       "name": "HypeRegistry",

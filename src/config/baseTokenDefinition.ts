@@ -1435,6 +1435,29 @@ export class BaseTokenDefinition {
     return lookup as TypedMap<string, BasePool>;
   }
 
+  static core(): TypedMap<string, BasePool> {
+    const USDC = "0xa4151b2b3e269645181dccf2d426ce75fcbdeca9";
+    const USDT = "0x900101d06a7426441ae63e9ab3b9b0f63be145f1";
+
+    const USDT_USDC = "0xd8f1c33d35cb471681385598d456d49c56ed2d51";
+
+    let lookup = new TypedMap<string, BasePool>();
+    lookup.set(USDC, {
+      pathIdx: [-1],
+      path: [ADDRESS_ZERO],
+      pathStartBlock: [0],
+      priority: 2,
+    });
+    lookup.set(USDT, {
+      pathIdx: [1],
+      path: [USDT_USDC],
+      pathStartBlock: [0],
+      priority: 1,
+    });
+
+    return lookup as TypedMap<string, BasePool>;
+  }
+
   static nonBase(): BasePool {
     let lookup: BasePool = {
       path: [ADDRESS_ZERO],
@@ -1507,6 +1530,8 @@ export class BaseTokenDefinition {
       mapping = this.iota();
     } else if (network == "48900") {
       mapping = this.zircuit();
+    } else if (network == "core") {
+      mapping = this.core();
     }
 
     return mapping as TypedMap<string, BasePool>;

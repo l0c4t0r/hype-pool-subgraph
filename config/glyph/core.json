@@ -1,0 +1,13 @@
+{
+  "network": "core",
+  "subgraphTemplate": "algebraIntegral",
+  "deploymentService": "core",
+  "deploymentName": "gamma-glyph-core",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0x32e27ff479454e32868ff67ee9f06bafdc1e908f",
+      "startBlock": 17268275
+    }
+  ]
+}

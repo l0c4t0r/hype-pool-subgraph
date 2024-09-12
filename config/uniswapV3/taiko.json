@@ -1,6 +1,6 @@
 {
   "network": "taiko",
-  "subgraphTemplate": "uniV3",
+  "subgraphTemplate": "uniswapV3",
   "deploymentService": "goldsky",
   "deploymentName": "gamma-uniswap-taiko",
   "hypeRegistry": [

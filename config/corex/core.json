@@ -1,0 +1,13 @@
+{
+  "network": "core",
+  "subgraphTemplate": "uniswapV3",
+  "deploymentService": "core",
+  "deploymentName": "gamma-corex-core",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xfc13ebe7feb9595d70195e9168aa7f3ace153621",
+      "startBlock": 17164390
+    }
+  ]
+}
