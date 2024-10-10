@@ -34,28 +34,14 @@ dataSources:
           file: ./abis/Hypervisor.json
         - name: Pool
           file: ./abis/FusionxPool.json
-        - name: UniswapV3Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: AlgebraV1Pool
-          file: ./abis/AlgebraV1Pool.json
-        - name: AlgebraV2Pool
-          file: ./abis/AlgebraV2Pool.json
-        - name: AlgebraIntegralPool
-          file: ./abis/AlgebraIntegralPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
-        - name: ERC20
-          file: ./abis/ERC20.json
-        - name: ERC20NameBytes
-          file: ./abis/ERC20NameBytes.json
-        - name: ERC20SymbolBytes
-          file: ./abis/ERC20SymbolBytes.json
+        {{> pools.yaml}}
+        {{> erc20.yaml}}
       eventHandlers:
         - event: HypeAdded(address,uint256)
           handler: handleHypeAdded
         - event: HypeRemoved(address,uint256)
           handler: handleHypeRemoved
-      file: ./src/handlers/uniswapV3/hypeRegistry.ts
+      file: ./src/handlers/common/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
   - name: Hypervisor
@@ -74,18 +60,7 @@ templates:
       abis:
         - name: Hypervisor
           file: ./abis/Hypervisor.json
-        - name: Pool
-          file: ./abis/FusionxPool.json
-        - name: UniswapV3Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: AlgebraV1Pool
-          file: ./abis/AlgebraV1Pool.json
-        - name: AlgebraV2Pool
-          file: ./abis/AlgebraV2Pool.json
-        - name: AlgebraIntegralPool
-          file: ./abis/AlgebraIntegralPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
+        {{> pools.yaml}}
       eventHandlers:
         - event: Deposit(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleDeposit
@@ -115,20 +90,7 @@ templates:
           file: ./abis/Hypervisor.json
         - name: Pool
           file: ./abis/FusionxPool.json
-        - name: UniswapV3Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: AlgebraV1Pool
-          file: ./abis/AlgebraV1Pool.json
-        - name: AlgebraV2Pool
-          file: ./abis/AlgebraV2Pool.json
-        - name: AlgebraIntegralPool
-          file: ./abis/AlgebraIntegralPool.json
-        - name: CamelotPool
-          file: ./abis/AlgebraV1CamelotPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
-        - name: FusionxPool
-          file: ./abis/UniswapV3Pool.json
+        {{> pools.yaml}}
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint
@@ -156,20 +118,7 @@ templates:
           file: ./abis/Hypervisor.json
         - name: Pool
           file: ./abis/UniswapV3Pool.json
-        - name: UniswapV3Pool
-          file: ./abis/UniswapV3Pool.json
-        - name: AlgebraV1Pool
-          file: ./abis/AlgebraV1Pool.json
-        - name: AlgebraV2Pool
-          file: ./abis/AlgebraV2Pool.json
-        - name: AlgebraIntegralPool
-          file: ./abis/AlgebraIntegralPool.json
-        - name: CamelotPool
-          file: ./abis/AlgebraV1CamelotPool.json
-        - name: RamsesV2Pool
-          file: ./abis/RamsesV2Pool.json
-        - name: FusionxPool
-          file: ./abis/UniswapV3Pool.json
+        {{> pools.yaml}}
       eventHandlers:
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint

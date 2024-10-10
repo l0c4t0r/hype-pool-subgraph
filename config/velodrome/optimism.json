@@ -1,0 +1,16 @@
+{
+  "network": "optimism",
+  "prune": 2592000,
+  "subgraphTemplate": "common",
+  "poolAbiName": "VelodromePool",
+  "handler": "uniswapV3",
+  "deploymentService": "studio",
+  "deploymentName": "gamma-hp-velodrome-optimism",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xF802D5c44dC4E3bB0eCcf680a6bA82Cbd24B9F33",
+      "startBlock": 125319599
+    }
+  ]
+}

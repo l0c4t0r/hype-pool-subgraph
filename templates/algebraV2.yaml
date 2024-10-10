@@ -53,7 +53,7 @@ dataSources:
           handler: handleHypeAdded
         - event: HypeRemoved(address,uint256)
           handler: handleHypeRemoved
-      file: ./src/handlers/algebraV2/hypeRegistry.ts
+      file: ./src/handlers/common/hypeRegistry.ts
   {{/hypeRegistry}}
 templates:
   - name: Hypervisor

@@ -1458,6 +1458,20 @@ export class BaseTokenDefinition {
     return lookup as TypedMap<string, BasePool>;
   }
 
+  static bartio(): TypedMap<string, BasePool> {
+    const HONEY = "0x0e4aaf1351de4c0264c5c7056ef3777b41bd8e03";
+
+    let lookup = new TypedMap<string, BasePool>();
+    lookup.set(HONEY, {
+      pathIdx: [-1],
+      path: [ADDRESS_ZERO],
+      pathStartBlock: [0],
+      priority: 1,
+    });
+
+    return lookup as TypedMap<string, BasePool>;
+  }
+
   static nonBase(): BasePool {
     let lookup: BasePool = {
       path: [ADDRESS_ZERO],
@@ -1532,6 +1546,8 @@ export class BaseTokenDefinition {
       mapping = this.zircuit();
     } else if (network == "core") {
       mapping = this.core();
+    } else if (network == "berachain-bartio") {
+      mapping = this.bartio();
     }
 
     return mapping as TypedMap<string, BasePool>;

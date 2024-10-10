@@ -5,7 +5,7 @@ import {
   Swap,
 } from "../../../generated/templates/Pool/FusionxPool";
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
-import { processBurn, processMint, processSwap } from "../common/pool";
+import { processBurn, processMint, processSwap } from "../process/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
 import { PROTOCOL_UNISWAP_V3 } from "../../config/constants";
 import { getOrCreateProtocol } from "../../helpers/entities";

@@ -1,0 +1,17 @@
+{
+    "network": "berachain-bartio",
+    "prune": 2592000,
+    "subgraphTemplate": "fusionx",
+    "poolAbiName": "FusionxPool",
+    "handler": "uniswapV3",
+    "deploymentService": "goldsky",
+    "deploymentName": "gamma-hp-kodiak-bartio",
+    "hypeRegistry": [
+      {
+        "name": "HypeRegistry",
+        "address": "0xCFD4A6A885C4404a2A5720918a9B4880600876A8",
+        "startBlock": 5169147
+      }
+    ]
+  }
+  

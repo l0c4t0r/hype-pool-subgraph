@@ -1,0 +1,16 @@
+- name: UniswapV3Pool
+  file: ./abis/UniswapV3Pool.json
+- name: AlgebraV1Pool
+  file: ./abis/AlgebraV1Pool.json
+- name: AlgebraV2Pool
+  file: ./abis/AlgebraV2Pool.json
+- name: AlgebraIntegralPool
+  file: ./abis/AlgebraIntegralPool.json
+- name: CamelotPool
+  file: ./abis/AlgebraV1CamelotPool.json
+- name: RamsesV2Pool
+  file: ./abis/RamsesV2Pool.json
+- name: FusionxPool
+  file: ./abis/UniswapV3Pool.json
+- name: VelodromePool
+  file: ./abis/VelodromePool.json

@@ -15,7 +15,7 @@ import {
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
 import { updateTvl } from "../../helpers/hypervisor";
-import { processSetFee, processZeroBurn } from "../common/hypervisor";
+import { processSetFee, processZeroBurn } from "../process/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
 import {
   getOrCreateHypervisor,

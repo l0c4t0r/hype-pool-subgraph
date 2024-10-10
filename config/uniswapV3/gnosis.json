@@ -1,0 +1,16 @@
+{
+  "network": "gnosis",
+  "prune": 1036800,
+  "subgraphTemplate": "common",
+  "poolAbiName": "UniswapV3Pool",
+  "handler": "uniswapV3",
+  "deploymentService": "studio",
+  "deploymentName": "gamma-hp-uniswap-gnosis",
+  "hypeRegistry": [
+    {
+      "name": "HypeRegistry",
+      "address": "0xc0766FF871c6C8e72C110100d0120829dc017d38",
+      "startBlock": 36307837
+    }
+  ]
+}

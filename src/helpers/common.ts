@@ -5,12 +5,14 @@ import { AlgebraIntegralPool as AlgebraIntegralPoolContract } from "../../genera
 import { CamelotPool as CamelotPoolContract } from "../../generated/templates/Pool/CamelotPool";
 import { UniswapV3Pool as UniswapPoolContract } from "../../generated/templates/Pool/UniswapV3Pool";
 import { RamsesV2Pool as RamsesV2PoolContract } from "../../generated/templates/Pool/RamsesV2Pool";
+import { VelodromePool as VelodromePoolContract } from "../../generated/templates/Pool/VelodromePool";
 import {
   BASE_POSITION,
   LIMIT_POSITION,
   PROTOCOL_ALGEBRA_V1,
   PROTOCOL_ALGEBRA_V2,
   PROTOCOL_ALGEBRA_INTEGRAL,
+  ZERO_BI,
 } from "../config/constants";
 import {
   getOrCreateHypervisor,
@@ -77,9 +79,16 @@ export function updateProtocolFeeGrowthOutside(
       feeGrowthOutside1X128 = tickInfo.getFeeGrowthOutside1X128();
     } else {
       const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
-      const tickInfo = uniswapPoolContract.ticks(tickIdx);
-      feeGrowthOutside0X128 = tickInfo.getFeeGrowthOutside0X128();
-      feeGrowthOutside1X128 = tickInfo.getFeeGrowthOutside1X128();
+      const tickInfo = uniswapPoolContract.try_ticks(tickIdx);
+      if (!tickInfo.reverted) {
+        feeGrowthOutside0X128 = tickInfo.value.getFeeGrowthOutside0X128();
+        feeGrowthOutside1X128 = tickInfo.value.getFeeGrowthOutside1X128();
+      } else {
+        const velodromePoolContract = VelodromePoolContract.bind(poolAddress);
+        const velodromeTickInfo = velodromePoolContract.ticks(tickIdx);
+        feeGrowthOutside0X128 = velodromeTickInfo.getFeeGrowthOutside0X128();
+        feeGrowthOutside1X128 = velodromeTickInfo.getFeeGrowthOutside1X128();
+      }
     }
   }
 
@@ -115,8 +124,9 @@ export function updateProtocolFeeGrowthGlobal(
     feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
   } else if (protocol == PROTOCOL_ALGEBRA_INTEGRAL) {
     const algebraPoolContract = AlgebraIntegralPoolContract.bind(poolAddress);
-    feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();
+    feeGrowthGlobal0X128 = algebraPoolContract.totalFeeGrowth0Token();    
     feeGrowthGlobal1X128 = algebraPoolContract.totalFeeGrowth1Token();
+    feeGrowthGlobal1X128 = ZERO_BI
   } else {
     const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
     feeGrowthGlobal0X128 = uniswapPoolContract.feeGrowthGlobal0X128();
@@ -252,9 +262,16 @@ export function fullRefresh(
     price = globalState.getPrice();
   } else {
     const uniswapPoolContract = UniswapPoolContract.bind(poolAddress);
-    const slot0 = uniswapPoolContract.slot0();
-    tick = slot0.getTick();
-    price = slot0.getSqrtPriceX96();
+    const uniswap_slot0 = uniswapPoolContract.try_slot0();
+    if (!uniswap_slot0.reverted) {
+      tick = uniswap_slot0.value.getTick();
+      price = uniswap_slot0.value.getSqrtPriceX96();
+    } else {
+      const velodromeContract = VelodromePoolContract.bind(poolAddress);
+      const velodrome_slot0 = velodromeContract.slot0();
+      tick = velodrome_slot0.getTick();
+      price = velodrome_slot0.getSqrtPriceX96();
+    }
   }
 
   updateProtocolFeeGrowthGlobal(

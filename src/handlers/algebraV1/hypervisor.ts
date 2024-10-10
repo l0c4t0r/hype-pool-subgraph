@@ -15,13 +15,16 @@ import {
   updateSnapshotPreviousBlock,
 } from "../../helpers/snapshots";
 import { updateTvl } from "../../helpers/hypervisor";
-import { processSetFee, processZeroBurn } from "../common/hypervisor";
+import { processSetFee, processZeroBurn } from "../process/hypervisor";
 import { updateProtocolPoolPositionFees } from "../../helpers/common";
-import { getOrCreateHypervisor, getOrCreateProtocol } from "../../helpers/entities";
+import {
+  getOrCreateHypervisor,
+  getOrCreateProtocol,
+} from "../../helpers/entities";
 import { initFastSyncPools } from "../../helpers/fastSync";
 
 export function handleRebalance(event: Rebalance): void {
-  const protocol = getOrCreateProtocol()
+  const protocol = getOrCreateProtocol();
   updateSnapshotPreviousBlock(
     event.address,
     event.block.number,
@@ -63,5 +66,5 @@ export function handleZeroBurn(event: ZeroBurn): void {
 }
 
 export function handleSetFee(event: SetFee): void {
-  processSetFee(event.address, event.params.newFee)
-};
+  processSetFee(event.address, event.params.newFee);
+}

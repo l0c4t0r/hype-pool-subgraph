@@ -248,6 +248,14 @@ export class constantAddresses {
     return lookup as TypedMap<string, string>;
   }
 
+  static bartio(): TypedMap<string, string> {
+    let lookup = new TypedMap<string, string>();
+    lookup.set("USDC", "0x0000000000000000000000000000000000000000");
+    lookup.set("HONEY", "0x0e4aaf1351de4c0264c5c7056ef3777b41bd8e03");
+
+    return lookup as TypedMap<string, string>;
+  }
+
   static network(network: string): TypedMap<string, string> {
     let mapping = new TypedMap<string, string>();
     if (network == "mainnet") {
@@ -312,6 +320,8 @@ export class constantAddresses {
       mapping = this.zircuit();
     } else if (network == "core") {
       mapping = this.core();
+    } else if (network == "berachain-bartio") {
+      mapping = this.bartio();
     }
 
     return mapping as TypedMap<string, string>;

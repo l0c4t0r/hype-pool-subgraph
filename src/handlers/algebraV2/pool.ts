@@ -5,7 +5,7 @@ import {
   Swap,
 } from "../../../generated/templates/Pool/AlgebraV2Pool";
 import { poolMatchesUnderlyingProtocol } from "../../helpers/pool";
-import { processBurn, processMint, processSwap } from "../common/pool";
+import { processBurn, processMint, processSwap } from "../process/pool";
 import { updateProtocolFeeGrowthGlobal } from "../../helpers/common";
 import { PROTOCOL_ALGEBRA_V2 } from "../../config/constants";
 import { getOrCreateProtocol } from "../../helpers/entities";
